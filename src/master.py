@@ -217,6 +217,7 @@ class Master:
 
 
     def play(self):
+        self.model.eval()
         while True:
             cxt = input('\n(empty to stop) Context:\t')
             if not cxt:

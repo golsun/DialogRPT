@@ -28,6 +28,7 @@ class ScorerBase(torch.nn.Module):
         # cxt = str
         # hyps = list of str
 
+        self.eval()
         cxt_turns = cxt.split('_EOS_')
         if max_cxt_turn is not None:
             cxt_turns = cxt_turns[-min(max_cxt_turn, len(cxt_turns)):]
