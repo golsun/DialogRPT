@@ -19,7 +19,8 @@ class Master:
         if opt.path_pth is not None:
             self._model.load(opt.path_pth)
         self.parallel()
-        self.feeder = Feeder(opt)
+        if opt.fld_data is not None:
+            self.feeder = Feeder(opt)
 
         os.makedirs(opt.fld_out + '/ckpt', exist_ok=True)
         if opt.task == 'train':
@@ -40,9 +41,9 @@ class Master:
 
 
     def parallel(self):
-        if self.opt.cuda:
+        n_gpu = torch.cuda.device_count()
+        if self.opt.cuda and n_gpu > 1:
             self._model = self._model.cuda()
-            n_gpu = torch.cuda.device_count()
             print('paralleling on %i GPU'%n_gpu)
             self.model = torch.nn.DataParallel(self._model)
             # after DataParallel, a warning about RNN weights shows up every batch
@@ -226,6 +227,6 @@ class Master:
                 if not hyp:
                     break
                 hyps.append(hyp)
-            scores = self.model.predict(cxt, hyps)
+            scores = self._model.predict(cxt, hyps)
             for i in range(len(hyps)):
                 print('%.3f\t%s'%(scores[i], hyps[i]))
