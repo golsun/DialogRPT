@@ -41,9 +41,10 @@ class Master:
 
 
     def parallel(self):
+        if self.opt.cuda:
+            self._model = self._model.cuda()
         n_gpu = torch.cuda.device_count()
         if self.opt.cuda and n_gpu > 1:
-            self._model = self._model.cuda()
             print('paralleling on %i GPU'%n_gpu)
             self.model = torch.nn.DataParallel(self._model)
             # after DataParallel, a warning about RNN weights shows up every batch
@@ -52,7 +53,6 @@ class Master:
             self._model = self.model.module
             self.model.core = self.model.module.core
         else:
-            print('not GPU-parallel')
             self.model = self._model
         self.optimizer = torch.optim.Adam(self._model.parameters(), lr=self.opt.lr)
         
