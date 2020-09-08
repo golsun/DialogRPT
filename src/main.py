@@ -14,7 +14,7 @@ class Option:
         else:
             self.cuda = True
         self.task = args.task
-        self.path_pth = args.path_pth
+        self.path_load = args.path_load
         self.batch = args.batch
         self.vali_size = max(self.batch, args.vali_size)
         self.vali_print = args.vali_print
@@ -25,7 +25,7 @@ class Option:
         self.max_hr_gap = args.max_hr_gap
         self.mismatch = args.mismatch
         self.fld_data = args.data
-        if args.task == 'train' or self.path_pth is None:
+        if args.task == 'train' or self.path_load is None:
             self.fld_out = 'out/%i'%time.time()
         else:
             self.fld_out = 'out/temp'
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     parser.add_argument('--vali_size', type=int, default=256)
     parser.add_argument('--vali_print', type=int, default=10)
     parser.add_argument('--lr', type=float, default=3e-5)
-    parser.add_argument('--path_pth','-p', type=str)
+    parser.add_argument('--path_load','-p', type=str)
     parser.add_argument('--cpu', action='store_true')
     parser.add_argument('--max_seq_len', type=int, default=50)
     parser.add_argument('--mismatch', action='store_true')

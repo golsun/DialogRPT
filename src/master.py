@@ -12,22 +12,24 @@ class Master:
 
     def __init__(self, opt):
         self.opt =  opt
-        if opt.path_pth is not None and '#' in opt.path_pth:
-            self._model = JointScorer()
+        if opt.path_load is not None and (opt.path_load.endswith('.yaml') or opt.path_load.endswith('.yml')):
+            self._model = JointScorer(opt)
         else:
             self._model = Scorer(opt)
-        if opt.path_pth is not None:
-            self._model.load(opt.path_pth)
+        if opt.path_load is not None:
+            self._model.load(opt.path_load)
         self.parallel()
-        if opt.fld_data is not None:
-            self.feeder = Feeder(opt)
 
-        os.makedirs(opt.fld_out + '/ckpt', exist_ok=True)
+        if opt.task != 'play':
+            if opt.fld_data is not None:
+                self.feeder = Feeder(opt)
+
         if opt.task == 'train':
             opt.save()
+            os.makedirs(opt.fld_out + '/ckpt', exist_ok=True)
             self.path_log = self.opt.fld_out + '/log.txt'
         else:
-            self.path_log = self.opt.fld_out + '/log_restored.txt'
+            self.path_log = self.opt.fld_out + '/log_infer.txt'
     
     
     def print(self, s=''):
@@ -54,7 +56,8 @@ class Master:
             self.model.core = self.model.module.core
         else:
             self.model = self._model
-        self.optimizer = torch.optim.Adam(self._model.parameters(), lr=self.opt.lr)
+        if self.opt.task == 'train':
+            self.optimizer = torch.optim.Adam(self._model.parameters(), lr=self.opt.lr)
         
 
     def train(self):
@@ -218,16 +221,15 @@ class Master:
 
     def play(self):
         self.model.eval()
+        print('[enter empty to stop]')
         while True:
-            cxt = input('\n(empty to stop) Context:\t')
+            print()
+            cxt = input('Context:  ')
             if not cxt:
                 break
-            hyps = []
-            while True:
-                hyp = input('(empty to stop) Candidate%i:\t'%len(hyps))
-                if not hyp:
-                    break
-                hyps.append(hyp)
-            scores = self._model.predict(cxt, hyps)
-            for i in range(len(hyps)):
-                print('%.3f\t%s'%(scores[i], hyps[i]))
+            hyp = input('Response: ')
+            if not hyp:
+                break
+            score = self._model.predict(cxt, [hyp])
+            ss = ['%s = %.3f'%(k, score[k][0]) for k in score]
+            print(', '.join(ss))

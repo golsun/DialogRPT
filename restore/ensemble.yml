@@ -1,0 +1,23 @@
+prior:
+  
+  - name: rand
+    wt: 0.5
+    path: restore/human_vs_rand.pth
+
+  - name: gen
+    wt: 0.5
+    path: restore/human_vs_gen.pth
+
+cond:
+
+  - name: updown
+    wt: 1
+    path: restore/updown.pth
+
+  - name: depth
+    wt: 0.48
+    path: restore/depth.pth
+
+  - name: width
+    wt: -0.5
+    path: restore/width.pth

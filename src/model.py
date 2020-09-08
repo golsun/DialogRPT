@@ -4,27 +4,28 @@
 import torch, os, pdb
 import numpy as np
 from transformers import GPT2Tokenizer, GPT2Model, GPT2Config
-from shared import get_scale
 
 
 class OptionInfer:
-    def __init__(self):
-        self.cuda = True
+    def __init__(self, cuda=True):
+        self.cuda = cuda
 
 
 class ScorerBase(torch.nn.Module):
-    def __init__(self):
+    def __init__(self, opt):
         super().__init__()
         self.ix_EOS = 50256
         self.ix_OMT = 986
+        self.opt = opt
+        self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
 
 
-    def core(self, ids, l_ids, return_logits=False, scale=1):
+    def core(self, ids, l_ids, return_logits=False):
         # to be implemented in child class
         return 0
 
     
-    def predict(self, cxt, hyps, max_cxt_turn=None, scale=1):
+    def predict(self, cxt, hyps, max_cxt_turn=None):
         # cxt = str
         # hyps = list of str
 
@@ -48,10 +49,14 @@ class ScorerBase(torch.nn.Module):
         ids = torch.LongTensor(ids)
         if self.opt.cuda:
             ids = ids.cuda()
-        scores = self.core(ids, lens, scale=scale)
-        if self.opt.cuda:
-            scores = scores.cpu()
-        return scores.detach().numpy()
+        scores = self.core(ids, lens)
+        if not isinstance(scores, dict):
+            scores['score'] = scores
+        for k in scores:
+            if self.opt.cuda:
+                scores[k] = scores[k].cpu()
+            scores[k] = scores[k].detach().numpy()
+        return scores
 
 
     def forward(self, batch):
@@ -64,16 +69,14 @@ class ScorerBase(torch.nn.Module):
 
 class Scorer(ScorerBase):
     def __init__(self, opt):
-        super().__init__()
-        self.opt = opt
+        super().__init__(opt)
         n_embd = 1024
         config = GPT2Config(n_embd=n_embd, n_layer=24, n_head=16)
         self.transformer = GPT2Model(config)
         self.score = torch.nn.Linear(n_embd, 1, bias=False)
-        self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         
 
-    def core(self, ids, l_ids, return_logits=False, scale=1):
+    def core(self, ids, l_ids, return_logits=False):
         n = ids.shape[0]
         attention_mask = torch.ones_like(ids)
         for i in range(n):
@@ -84,7 +87,7 @@ class Scorer(ScorerBase):
         if return_logits:
             return logits
         else:
-            return torch.sigmoid(logits * scale)
+            return torch.sigmoid(logits)
 
     
     def load(self, path):
@@ -94,73 +97,54 @@ class Scorer(ScorerBase):
 
 
 class JointScorer(ScorerBase):
-    def __init__(self):
-        super().__init__()
-        import socket
-        self.hostname = socket.gethostname()
-        print(get_scale())
-
     
-    def _core(self, k, ids, l_ids, scale=1):
-        i = self.kk.index(k)
-        attr = 'scorer%i'%i
-        scorer = getattr(self, attr)
-        return scorer.core(ids, l_ids, scale=scale)
-
-
     def core(self, ids, l_ids, return_logits=False):
-        d_scale = get_scale()
-        if self.kk_cond:
-            prior = 0
-            for k in self.kk_prior:
-                scale = d_scale.get(k, 1)
-                prior = prior + self._core(k, ids, l_ids, scale=scale)
-            prior = prior / len(self.kk_prior)
-        else:
-            prior = 1
-
-        if self.kk_cond:
-            cond = 0
-            for k in self.kk_cond:
-                scale = d_scale.get(k, 1)
-                cond = cond + self._core(k, ids, l_ids, scale=scale)
-            cond = cond / len(self.kk_cond)
-        else:
-            cond = 1
+        assert(not return_logits)
+        scores = dict()
+        for k in self.kk['prior'] + self.kk['cond']:
+            scorer = getattr(self, 'scorer_%s'%k)
+            scores[k] = scorer.core(ids, l_ids)
         
-        return prior * cond
+        def avg_score(kk):
+            if not kk:
+                return 1
+            sum_score_wt = 0
+            sum_wt = 0
+            for k in kk:
+                sum_score_wt = sum_score_wt + scores[k] * self.wt[k]
+                sum_wt += self.wt[k]
+            return sum_score_wt / sum_wt
 
-
-    def create(self, k):
-        path = 'restore/%s/model.pth'%k
-        if 'MININT-3LHNLKS' in self.hostname:
-            path = path.replace('restore/', 'F:/restore/DialogScorer/')
-        print('loading from', path)
-        scorer = Scorer(OptionInfer())
-        weights = torch.load(path)
-        scorer.load_state_dict(weights)
-        return scorer
+        prior = avg_score(self.kk['prior'])
+        cond = avg_score(self.kk['cond'])
+        scores['final'] = prior * cond
+        return scores
 
     
-    def load(self, paths):
-        kk_prior, kk_cond = paths.split('##')
-        self.kk_prior = kk_prior.split('#')
-        self.kk_cond = kk_cond.split('#')
-        prior = ' + '.join(self.kk_prior)
-        cond = ' + '.join(self.kk_cond)
-        print('==== FORMULA ====')
-        print(prior + ' * ' + cond)
-        print('=================')
+    def load(self, path_config):
+        import yaml
+        with open(path_config, 'r') as stream:
+            config = yaml.safe_load(stream)
+        print(config)
 
-        self.scorers = dict()
-        self.kk = list(set(self.kk_prior + self.kk_cond))
-        for i, k in enumerate(self.kk):
-            attr = 'scorer%i'%i
-            scorer = self.create(k)
-            setattr(self, attr, scorer)
-
-
-
+        paths = dict()
+        self.wt = dict()
+        self.kk = dict()
+        for prefix in ['prior', 'cond']:
+            self.kk[prefix] = []
+            for d in config[prefix]:
+                k = d['name']
+                self.kk[prefix].append(k)
+                self.wt[k] = d['wt']
+                paths[k] = d['path']
+        
+        for k in paths:
+            path = paths[k]
+            print('[%s] loading from %s'%(k, path))
+            weights = torch.load(path)
+            scorer = Scorer(OptionInfer(cuda=self.opt.cuda))
+            scorer.load_state_dict(weights)
+            setattr(self, 'scorer_%s'%k, scorer)
 
 
 
