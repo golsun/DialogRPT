@@ -51,7 +51,7 @@ class ScorerBase(torch.nn.Module):
             ids = ids.cuda()
         scores = self.core(ids, lens)
         if not isinstance(scores, dict):
-            scores['score'] = scores
+            scores = {'score': scores}
         for k in scores:
             if self.opt.cuda:
                 scores[k] = scores[k].cpu()
