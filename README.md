@@ -123,7 +123,7 @@ We trained all models on 8 Nvidia V100 GPUs (each with 32G memory) with the foll
 | `vali_size`    | 1024 | number of samples used for validation (i.e. dev set size) | 
 | `lr` | 3e-05 | learning rate |
 | `max_seq_len` | 50 | max allowed sequence length, longer part will be truncated |
-| `max_hr_gap` | 1 | max allowed time difference (in hours) between positive and negative sample. If longer, this pair will not be used for training or validating.
+| `max_hr_gap` | 1 | max allowed hour difference between positive and negative samples |
 
 ## Play
 
