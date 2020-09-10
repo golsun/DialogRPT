@@ -3,11 +3,11 @@
 How likely a dialog response is upvoted by people and/or trigger more replies? This is what [DialogRPT](arxiv) is learned to predict.
 It is a dialog response ranking transformer-based model trained on millions of human feedback data, presented at [EMNLP'20](https://2020.emnlp.org/).
 
-<img src="doc/example.PNG" width="600">
-
 ## Interactive Demo
 
 Please check out this [Colab Notebook](colab) for an interactive demo.
+
+The following example shows that the model predicts that, given the same context *"I love NLP!"*, the response *"Here’s a free textbook (URL) in case anyone needs it."* is more likely to be upvoted than the response *"Me too!"*.
 
 <img src="doc/demo.PNG" width="700">
 
