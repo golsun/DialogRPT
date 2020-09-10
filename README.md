@@ -34,7 +34,7 @@ pip install -r requirements.txt
 |  ... which gets longer follow-up thread? | `depth` | [link](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) |
 | **Human-like** (i.e., human vs fake): <br> given a context and one human response, distinguish it with... |    |
 | ... a random human response | `human_vs_rand` | [link](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
-| ... a machine generated response | `human_vs_machine` | [link](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_gen.pth) |
+| ... a machine generated response | `human_vs_machine` | [link](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
 
 
 ## Data
