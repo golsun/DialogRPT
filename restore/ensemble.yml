@@ -1,12 +1,17 @@
+# see model.py/JointScorer.core for details
+# the `prior` score is the weighted average of `human_vs_rand` and `human_vs_machine` predictions, 
+# and `cond` is the weighted average of `updown`, `depth`and `width` predictions. 
+# The final score is the product of `prior` score and `cond` score
+
 prior:
   
-  - name: rand
+  - name: human_vs_rand
     wt: 0.5
     path: restore/human_vs_rand.pth
 
-  - name: gen
+  - name: human_vs_machine
     wt: 0.5
-    path: restore/human_vs_gen.pth
+    path: restore/human_vs_machine.pth
 
 cond:
 
