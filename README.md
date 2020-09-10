@@ -119,11 +119,11 @@ python src/main.py train --data=data/out/human_vs_machine -p=restore/medium_ft.p
 We trained all models on 8 Nvidia V100 GPUs (each with 32G memory) with the following hyperparameters. Checkpoint with the best validation accuracy is used as final model.
 | Argument    | Value |  Description |
 | :------------- | :-----------: |:------------- | 
-| `batch`    | 256 | total batch size for all GPUs | 
-| `vali_size`    | 1024 | number of samples used for validation (i.e. dev set size) | 
+| `batch`    | 256 | total batch size for all GPUs. | 
+| `vali_size`    | 1024 | number of samples used for validation (i.e. dev set size). | 
 | `lr` | 3e-05 | learning rate |
-| `max_seq_len` | 50 | max allowed sequence length, longer part will be truncated |
-| `max_hr_gap` | 1 | max allowed hour difference between positive and negative samples |
+| `max_seq_len` | 50 | max allowed sequence length. <br> if longer, leading tokens will be truncated |
+| `max_hr_gap` | 1 | max allowed hour difference between positive and negative samples. <br> If longer, this pair will be discarded for train/vali|
 
 ## Play
 
