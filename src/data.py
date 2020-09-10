@@ -634,13 +634,13 @@ def combine_sub(year_from, year_to, feedback, overwrite=False, skip_same_pos=Tru
     for sub in subs:
         empty = True
         for year in range(year_from, year_to + 1):
-            path = '%s/%s/%i_%s.tsv'%(fld_subs, sub, year, feedback)
+            path = '%s/%s/%i_%s_ids.tsv'%(fld_subs, sub, year, feedback)
             if not os.path.exists(path):
                 continue
             for line in open(path, encoding='utf-8'):
                 if line.startswith('#'):
                     continue
-                line.strip('\n')
+                line = line.strip('\n')
                 if not line:
                     continue
                 lines.append(line)

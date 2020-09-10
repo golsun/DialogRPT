@@ -93,6 +93,10 @@ class Scorer(ScorerBase):
     def load(self, path):
         print('loading from '+path)
         weights = torch.load(path)
+        if path.endswith('.pkl'):
+            # DialoGPT checkpoint
+            weights['score.weight'] = weights['lm_head.decoder.weight'][self.ix_EOS: self.ix_EOS+1, :]
+            del weights['lm_head.decoder.weight']
         self.load_state_dict(weights)
 
 
