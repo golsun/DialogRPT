@@ -1,7 +1,7 @@
-# DialogRPT: a pretrained dialog response ranking model
+# DialogRPT: pretrained dialog response ranking models
 
 How likely a dialog response is upvoted by people and/or trigger more replies? This is what [DialogRPT](arxiv) is learned to predict.
-It is a dialog response ranking transformer-based model trained on millions of human feedback data, presented at [EMNLP'20](https://2020.emnlp.org/).
+It is a set of dialog response ranking transformer-based models trained on millions of human feedback data, presented at [EMNLP'20](https://2020.emnlp.org/).
 
 ## Interactive Demo
 
@@ -13,11 +13,16 @@ In the following example, the model predicts that, given the same context *"I lo
 
 ## Install
 
-**Step 1.**
+**Step 1.** Download the repo
 ```
 git clone https://github.com/golsun/DialogRPT
 cd DialogRPT
-pip install .
+```
+**Step 2.** Install the packages
+```
+conda create -n dialogrpt python=3.6
+conda activate dialogrpt
+pip install -r requirements.txt
 ```
 **Step 2.** Download the pretrained models into folder `restore`
 

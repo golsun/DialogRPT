@@ -801,7 +801,7 @@ def build_pairs(year_from, year_to, feedback):
 
 FLD = 'data'
 fld_bz2 = FLD + '/bz2/'
-fld_jsonl = 'F:/reddit_graph/'# FLD + '/jsonl/'
+fld_jsonl = FLD + '/jsonl/'
 fld_subs = FLD + '/subs/'
 fld_out = FLD + '/out/'
 
