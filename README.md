@@ -1,12 +1,15 @@
-# DialogRPT
+# DialogRPT: a pretrained dialog response ranking model
 
-How likely a dialog response is upvoted by people and/or trigger more replies? This is what [DialogRPT](arxiv) is trying to predict.
-It is a dialog response ranking model trained on millions of human feedback data, presented at [EMNLP'20](https://2020.emnlp.org/).
+How likely a dialog response is upvoted by people and/or trigger more replies? This is what [DialogRPT](arxiv) is learned to predict.
+It is a dialog response ranking transformer-based model trained on millions of human feedback data, presented at [EMNLP'20](https://2020.emnlp.org/).
 
-## Interactive demo
+<img src="doc/example.png" width="400">
 
-Please check out this [Colab Notebook](colab) for an interactive demo, and here's a snapshot:
-(doc/colab_snapshot)
+## Interactive Demo
+
+Please check out this [Colab Notebook](colab) for an interactive demo.
+
+<img src="doc/demo.png" width="500">
 
 ## Install
 
@@ -15,6 +18,18 @@ git clone https://github.com/golsun/DialogRPT
 cd DialogRPT
 pip install .
 ```
+Download the pretrained models
+
+| Task     | Pretrained model |
+| :------------- | ---------- | :-----------: |
+| **Human feedback: <br> given a context and its two human responses, predict**|     |
+|  ... which gets more upvotes? | [updown.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) |
+| ... which gets more direct replies? | [width.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) |
+|  ... which gets longer follow-up thread? | [depth.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) |
+| **Human-like: <br> given a context and one human response, distinguish it with** |    |
+| ... a random human response | [human_vs_rand.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
+| ... a machine generated response | [human_vs_gen.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_gen.pth) |
+
 
 ## Data
 
@@ -38,9 +53,10 @@ python src/data.py depth 2011
 python src/data.py width 2011
 # TODO: repeat the above command with 2012 and 2013
 ```
-The final `train.tsv` and `vali.tsv` files are used to train the model. One may use `vali.tsv` from a future year as the test set. (We used 2011-2012 for train/vali and 2013 for test)
+The expected file structure in `data` folder is shown below.
+The final `train.tsv` and `vali.tsv` files (e.g. in `data/out/updown`) are used to train the model. One may use `vali.tsv` from a future non-overlapping year as the test set. (We used 2011-2012 for train/vali and 2013 for test)
 
-The expected file structure in `data` folder is
+
 ```bash
 ├── data
    └── bz2
@@ -79,7 +95,7 @@ The expected file structure in `data` folder is
            └── ...
 ```
 
-## Traing
+## Training
 We use [DialoGPT](https://github.com/microsoft/DialoGPT) to initialize the model. Please download at
 ```
 python src/main.py train --data=data/out/updown
