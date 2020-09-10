@@ -5,7 +5,7 @@ It is a dialog response ranking transformer-based model trained on millions of h
 
 ## Interactive Demo
 
-Please check out this [Colab Notebook](colab) for an interactive demo.
+Please check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
 
 The following example shows that the model predicts that, given the same context *"I love NLP!"*, the response *"Here’s a free textbook (URL) in case anyone needs it."* is more likely to be upvoted than the response *"Me too!"*.
 
