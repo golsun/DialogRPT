@@ -3,13 +3,13 @@
 How likely a dialog response is upvoted by people and/or trigger more replies? This is what [DialogRPT](arxiv) is learned to predict.
 It is a dialog response ranking transformer-based model trained on millions of human feedback data, presented at [EMNLP'20](https://2020.emnlp.org/).
 
-<img src="doc/example.png" width="400">
+<img src="doc/example.PNG" width="400">
 
 ## Interactive Demo
 
 Please check out this [Colab Notebook](colab) for an interactive demo.
 
-<img src="doc/demo.png" width="500">
+<img src="doc/demo.PNG" width="500">
 
 ## Install
 
@@ -21,12 +21,12 @@ pip install .
 Download the pretrained models
 
 | Task     | Pretrained model |
-| :------------- | ---------- | :-----------: |
-| **Human feedback: <br> given a context and its two human responses, predict**|     |
+| :------------- | :-----------: |
+| **Human feedback: <br> given a context and its two human responses, predict...**|     |
 |  ... which gets more upvotes? | [updown.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) |
 | ... which gets more direct replies? | [width.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) |
 |  ... which gets longer follow-up thread? | [depth.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) |
-| **Human-like: <br> given a context and one human response, distinguish it with** |    |
+| **Human-like: <br> given a context and one human response, distinguish it with...** |    |
 | ... a random human response | [human_vs_rand.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
 | ... a machine generated response | [human_vs_gen.pth](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_gen.pth) |
 
