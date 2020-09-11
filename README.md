@@ -1,7 +1,7 @@
 # DialogRPT: pretrained dialog response ranking models
 
-How likely a dialog response is upvoted by people and/or trigger more replies? This is what [DialogRPT](arxiv) is learned to predict.
-It is a set of dialog response ranking transformer-based models trained on millions of human feedback data, presented at [EMNLP'20](https://2020.emnlp.org/).
+How likely a dialog response is upvoted by people and/or trigger more replies? This is what **DialogRPT** is learned to predict.
+It is a set of dialog response ranking transformer-based models trained on millions of human feedback data. The [paper](https://arxiv.org/) is accepted by [EMNLP 2020](https://2020.emnlp.org/).
 
 ## Interactive Demo
 
@@ -121,7 +121,7 @@ For `human_vs_machine` task, we build dataset by pair human response with a resp
 python src/main.py train --data=data/out/human_vs_machine -p=restore/medium_ft.pkl
 ```
 
-We trained all models on 8 Nvidia V100 GPUs (each with 32G memory) with the following hyperparameters. Checkpoint with the best validation accuracy is used as final model.
+We trained all models on a Nvidia V100 4-core GPU (each core with 32G memory) with the following hyperparameters. Checkpoint with the best validation accuracy is used as final model.
 | Argument    | Value |  Description |
 | :------------- | :-----------: |:------------- | 
 | `batch`    | 256 | total batch size for all GPUs. | 
@@ -146,3 +146,19 @@ python src/main.py play -p=restore/ensemble.yml
 
 ## Evaluation
 
+### Human feedback prediction
+
+
+### Human-like classification
+
+## Citation
+If you use our dataset or model, please cite our [EMNLP paper](https://arxiv.org/)
+
+```
+@inproceedings{gao2020dialogrpt,
+    title={Dialogue Response RankingTraining with Large-Scale Human Feedback Data},
+    author={Xiang Gao and Yizhe Zhang and Michel Galley and Chris Brockett and Bill Dolan},
+    year={2020},
+    booktitle={EMNLP}
+}
+```
