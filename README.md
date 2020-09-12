@@ -157,7 +157,7 @@ TODO
 
 ### Human-like classification
 
-Although the model is trained on `reddit` corpus only, we measured **zero-shot** `human_vs_rand` performance on several unseen corpora (`twitter`, `dailydialog` and `personachat`)
+* `human_vs_rand` task: Although the model is trained on `reddit` corpus only, we measured its **zero-shot** performance on several unseen corpora (`twitter`, `dailydialog` and `personachat`)
 ```bash
 python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --fld=test/reddit
 # TODO: repeat with other corpus (--fld)
@@ -165,15 +165,13 @@ python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --fld=test/reddit
 The expected performance is listed in Table below (from Table 7 of the [paper](https://arxiv.org/))
 | `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
 | :-------------      | :------: |:------------: |:--------: |:------------: |
-| BM25                |  0.886   | 0.574         | 0.510     | 0.464         |
-| Dialog ppl.         |  0.886   | 0.574         | 0.510     | 0.464         |
-| Reverse dialog ppl. |  0.886   | 0.574         | 0.510     | 0.464         |
-| [ConveRT](https://arxiv.org/abs/1911.03688) |  0.886   | 0.574         | 0.510     | 0.464         |
+| BM25                |  0.309   | 0.182         | 0.178     | 0.117         |
+| Dialog ppl.         |  0.560   | 0.176         | 0.107     | 0.108         |
+| Reverse dialog ppl. |  0.775   | 0.457         | 0.440     | 0.449         |
+| [ConveRT](https://arxiv.org/abs/1911.03688) |  0.760   | 0.380         | 0.439     | 0.197         |
 | **DialogRPT** (ours)|  0.886   | 0.574         | 0.510     | 0.464         |
 
-### `human_vs_machine` performance
-
-The `human_vs_machine` performance is only evaluated for `reddit` corpus. 
+* `human_vs_machine` task: its performance is only evaluated for `reddit` corpus. 
 ```bash
 python src/eval.py human_vs_machine -p=restore/human_vs_machine.pth --fld=test/reddit
 # expecting accuracy ~0.9
