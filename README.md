@@ -25,6 +25,10 @@ conda activate dialogrpt
 pip install -r requirements.txt
 ```
 **Step 2.** Download the pretrained models into folder `restore`
+```bash
+wget https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth -P restore
+# TODO: download other models using the links below
+```
 
 | Description    | Task | Pretrained model |
 | :------------- | :-----------: | :-----------: |
