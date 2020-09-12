@@ -46,12 +46,16 @@ class ScorerBase(torch.nn.Module):
         ids = []
         for seq in seqs:
             ids.append(seq + [self.ix_EOS] * (max_len - len(seq)))
-        ids = torch.LongTensor(ids)
-        if self.opt.cuda:
-            ids = ids.cuda()
-        scores = self.core(ids, lens)
+        with torch.no_grad():
+            ids = torch.LongTensor(ids)
+            if self.opt.cuda:
+                ids = ids.cuda()
+            scores = self.core(ids, lens)
         if not isinstance(scores, dict):
-            scores = {'score': scores}
+            if self.opt.cuda:
+                scores = scores.cpu()
+            return scores.detach().numpy()
+            
         for k in scores:
             if self.opt.cuda:
                 scores[k] = scores[k].cpu()

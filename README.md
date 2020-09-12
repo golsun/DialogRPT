@@ -146,7 +146,38 @@ python src/main.py play -p=restore/ensemble.yml
 
 ## Evaluation
 
+Please download our test sets with
+```
+wget https://xiagnlp2.blob.core.windows.net/dialogrpt/test.zip
+unzip test.zip
+```
+
 ### Human feedback prediction
+TODO
+
+### Human-like classification
+
+Although the model is trained on `reddit` corpus only, we measured **zero-shot** `human_vs_rand` performance on several unseen corpora (`twitter`, `dailydialog` and `personachat`)
+```bash
+python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --fld=test/reddit
+# TODO: repeat with other corpus (--fld)
+```
+The expected performance is listed in Table below (from Table 7 of the [paper](https://arxiv.org/))
+| `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
+| :-------------      | :------: |:------------: |:--------: |:------------: |
+| BM25                |  0.886   | 0.574         | 0.510     | 0.464         |
+| Dialog ppl.         |  0.886   | 0.574         | 0.510     | 0.464         |
+| Reverse dialog ppl. |  0.886   | 0.574         | 0.510     | 0.464         |
+| [ConveRT](https://arxiv.org/abs/1911.03688) |  0.886   | 0.574         | 0.510     | 0.464         |
+| **DialogRPT** (ours)|  0.886   | 0.574         | 0.510     | 0.464         |
+
+### `human_vs_machine` performance
+
+The `human_vs_machine` performance is only evaluated for `reddit` corpus. 
+```bash
+python src/eval.py human_vs_machine -p=restore/human_vs_machine.pth --fld=test/reddit
+# expecting accuracy ~0.9
+```
 
 
 ### Human-like classification
