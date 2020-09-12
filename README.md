@@ -153,7 +153,20 @@ unzip test.zip
 ```
 
 ### Human feedback prediction
-TODO
+
+The performance on `updown`, `depth`, and `width` can be measured with the following commands, respectively.
+```
+python src/eval.py updown -p=restore/updown.pth --fld=test/reddit
+python src/eval.py depth -p=restore/depth.pth --fld=test/reddit
+python src/eval.py width -p=restore/width.pth --fld=test/reddit
+```
+
+The expected pairwise accuracy is listed in the table below (from Table 5 of the [paper](https://arxiv.org/))
+| human feedback     | `updown` | `depth` | `width` |
+| :-------------      | :------: |:------------: |:--------: |
+| Dialog ppl.         |  0.560   | 0.176         | 0.107     | 
+| Reverse dialog ppl. |  0.775   | 0.457         | 0.440     | 
+| **DialogRPT** (ours)| **0.886** | **0.574**  | **0.510** | 
 
 ### Human-like classification
 
@@ -162,19 +175,19 @@ TODO
 python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --fld=test/reddit
 # TODO: repeat with other corpus (--fld)
 ```
-The expected performance is listed in Table below (from Table 7 of the [paper](https://arxiv.org/))
+The expected expected pairwise is listed in the table below (from Table 7 of the [paper](https://arxiv.org/))
 | `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
 | :-------------      | :------: |:------------: |:--------: |:------------: |
 | BM25                |  0.309   | 0.182         | 0.178     | 0.117         |
 | Dialog ppl.         |  0.560   | 0.176         | 0.107     | 0.108         |
 | Reverse dialog ppl. |  0.775   | 0.457         | 0.440     | 0.449         |
 | [ConveRT](https://arxiv.org/abs/1911.03688) |  0.760   | 0.380         | 0.439     | 0.197         |
-| **DialogRPT** (ours)|  0.886   | 0.574         | 0.510     | 0.464         |
+| **DialogRPT** (ours)| **0.886** | **0.574**  | **0.510** | **0.464**     |
 
 * `human_vs_machine` task: its performance is only evaluated for `reddit` corpus. 
 ```bash
 python src/eval.py human_vs_machine -p=restore/human_vs_machine.pth --fld=test/reddit
-# expecting accuracy ~0.9
+# expecting accuracy ~0.98
 ```
 
 
