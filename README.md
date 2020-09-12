@@ -156,17 +156,17 @@ unzip test.zip
 
 The performance on `updown`, `depth`, and `width` can be measured with the following commands, respectively.
 ```
-python src/eval.py updown -p=restore/updown.pth --fld=test/reddit
-python src/eval.py depth -p=restore/depth.pth --fld=test/reddit
-python src/eval.py width -p=restore/width.pth --fld=test/reddit
+python src/eval.py feedback -p=restore/updown.pth --fld=test/updown
+python src/eval.py feedback -p=restore/depth.pth --fld=test/depth
+python src/eval.py feedback -p=restore/width.pth --fld=test/width
 ```
 
 The expected pairwise accuracy is listed in the table below (from Table 5 of the [paper](https://arxiv.org/))
 | human feedback     | `updown` | `depth` | `width` |
 | :-------------      | :------: |:------------: |:--------: |
-| Dialog ppl.         |  0.560   | 0.176         | 0.107     | 
-| Reverse dialog ppl. |  0.775   | 0.457         | 0.440     | 
-| **DialogRPT** (ours)| **0.886** | **0.574**  | **0.510** | 
+| Dialog ppl.         |  0.488   | 0.508         | 0.513     | 
+| Reverse dialog ppl. |  0.560   | 0.557         | 0.571     | 
+| **DialogRPT** (ours)| **0.683** | **0.701**  | **0.764** | 
 
 ### Human-like classification
 
