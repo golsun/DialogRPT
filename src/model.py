@@ -4,6 +4,7 @@
 import torch, os, pdb
 import numpy as np
 from transformers import GPT2Tokenizer, GPT2Model, GPT2Config
+from shared import EOS_token
 
 
 class OptionInfer:
@@ -30,7 +31,7 @@ class ScorerBase(torch.nn.Module):
         # hyps = list of str
 
         self.eval()
-        cxt_turns = cxt.split('_EOS_')
+        cxt_turns = cxt.split(EOS_token)
         if max_cxt_turn is not None:
             cxt_turns = cxt_turns[-min(max_cxt_turn, len(cxt_turns)):]
         ids_cxt = []

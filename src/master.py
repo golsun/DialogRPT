@@ -148,6 +148,9 @@ class Master:
 
 
     def vali(self, info=''):
+        assert(self.opt.min_rank_gap is not None)
+        assert(self.opt.min_score_gap is not None)
+
         n_print = min(self.opt.batch, self.opt.vali_print)
         self.model.eval()
         loss = 0
@@ -220,8 +223,10 @@ class Master:
 
 
     def play(self):
+        from shared import EOS_token
         self.model.eval()
-        print('[enter empty to stop]')
+        print('[INFO] enter empty to stop')
+        print('[INFO] use %s to delimite turns for a multi-turn context'%EOS_token)
         while True:
             print()
             cxt = input('Context:  ')

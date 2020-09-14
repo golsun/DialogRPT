@@ -1,7 +1,7 @@
 # DialogRPT: pretrained dialog response ranking models
 
 How likely a dialog response is upvoted by people and/or trigger more replies? This is what **DialogRPT** is learned to predict.
-It is a set of dialog response ranking transformer-based models trained on millions of human feedback data. The [paper](https://arxiv.org/) is accepted by [EMNLP 2020](https://2020.emnlp.org/).
+It is a set of dialog response ranking transformer-based models trained on millions of human feedback data. See [paper](https://arxiv.org/) for more details.
 
 ## Interactive Demo
 
@@ -27,7 +27,7 @@ pip install -r requirements.txt
 **Step 2.** Download the pretrained models into folder `restore`
 ```bash
 wget https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth -P restore
-# TODO: download other models using the links below
+# TODO: download other models using the links in the table below
 ```
 
 | Description    | Task | Pretrained model |
@@ -43,28 +43,29 @@ wget https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth -P restore
 
 ## Data
 
-**Step 1.** Download the `.bz2` files from this [third-party dump](https://files.pushshift.io/reddit/), including both [comments](https://files.pushshift.io/reddit/comments/) and [submissions](https://files.pushshift.io/reddit/submissions/). The following is the example command to download the first month, `2011-01`. To reproduce the model, please download all three-year data, from `2011-01` to `2013-12`.
+**Step 1.** Download the `.bz2` files from this [third-party dump](https://files.pushshift.io/reddit/), including both [comments](https://files.pushshift.io/reddit/comments/) and [submissions](https://files.pushshift.io/reddit/submissions/). The following is the example command to download the first month, `2011-01`. To reproduce the model training, please download all data for year 2011 and 2012, i.e., from `2011-01` to `2012-12`.
 ```bash
 mkdir "data/bz2"
 wget https://files.pushshift.io/reddit/comments/RC_2011-01.bz2 -P data/bz2
 wget https://files.pushshift.io/reddit/submissions/RS_2011-01.bz2 -P data/bz2
-# TODO: repeat the above wget commands with other months
+# TODO: repeat the above wget commands with months from `2011-01` to `2012-12`
 ```
 **Step 2.** Read the `.bz2` files and group items from the same subreddit and extract basic attributes and dialog trees.
 ```bash
 python src/data.py bz2 2011
 python src/data.py basic 2011
-# TODO: repeat the above command with 2012 and 2013
+# TODO: repeat the above command with 2012
 ```
 **Step 3.** Build training and testing data for different feedback signals. 
 ```bash
 python src/data.py updown 2011
 python src/data.py depth 2011
 python src/data.py width 2011
-# TODO: repeat the above command with 2012 and 2013
+# TODO: repeat the above command with 2012
 ```
-The expected file structure in `data` folder is shown below.
-The final `train.tsv` and `vali.tsv` files (e.g. in `data/out/updown`) are used to train the model. One may use `vali.tsv` from a future non-overlapping year as the test set. (We used 2011-2012 for train/vali and 2013 for test)
+The expected file structure in `data` folder is shown below. The final `train.tsv` and `vali.tsv` files (e.g. in `data/out/updown`) are used to train and validate the model. 
+
+We used `vali.tsv` from year `2013` as the test set (thus no overlap with the train/vali data built above with year `2011-2012`). You can [download test sets](https://xiagnlp2.blob.core.windows.net/dialogrpt/test.zip) and follow instructions in section **Evaluation** beblow for its use.
 
 
 ```bash
@@ -150,7 +151,7 @@ python src/main.py play -p=restore/ensemble.yml
 
 ## Evaluation
 
-Please download our test sets with
+Please [download test](https://xiagnlp2.blob.core.windows.net/dialogrpt/test.zip) (or use the command below)
 ```
 wget https://xiagnlp2.blob.core.windows.net/dialogrpt/test.zip
 unzip test.zip
@@ -159,13 +160,14 @@ unzip test.zip
 ### Human feedback prediction
 
 The performance on `updown`, `depth`, and `width` can be measured with the following commands, respectively.
+The `--min_score_gap` and `--min_rank_gap` arguments are consistent with the values used to measure validation loss during training.
 ```
-python src/eval.py feedback -p=restore/updown.pth --fld=test/updown
-python src/eval.py feedback -p=restore/depth.pth --fld=test/depth
-python src/eval.py feedback -p=restore/width.pth --fld=test/width
+python src/eval.py feedback -p=restore/updown.pth --data=test/human_feedback/updown.tsv --min_score_gap=20 --min_rank_gap=0.5
+python src/eval.py feedback -p=restore/depth.pth --data=test/human_feedback/depth.tsv --min_score_gap=4 --min_rank_gap=0.5
+python src/eval.py feedback -p=restore/width.pth --data=test/human_feedback/width.tsv --min_score_gap=4 --min_rank_gap=0.5
 ```
 
-The expected pairwise accuracy is listed in the table below (from Table 5 of the [paper](https://arxiv.org/))
+The expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 5 of the [paper](https://arxiv.org/))
 | human feedback     | `updown` | `depth` | `width` |
 | :-------------      | :------: |:------------: |:--------: |
 | Dialog ppl.         |  0.488   | 0.508         | 0.513     | 
@@ -176,10 +178,12 @@ The expected pairwise accuracy is listed in the table below (from Table 5 of the
 
 * `human_vs_rand` task: Although the model is trained on `reddit` corpus only, we measured its **zero-shot** performance on several unseen corpora (`twitter`, `dailydialog` and `personachat`)
 ```bash
-python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --fld=test/reddit
-# TODO: repeat with other corpus (--fld)
+python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/reddit
+python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/dailydialog
+python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/twitter
+python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/personachat
 ```
-The expected expected pairwise is listed in the table below (from Table 7 of the [paper](https://arxiv.org/))
+The expected expected pairwise on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/))
 | `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
 | :-------------      | :------: |:------------: |:--------: |:------------: |
 | BM25                |  0.309   | 0.182         | 0.178     | 0.117         |
@@ -190,12 +194,10 @@ The expected expected pairwise is listed in the table below (from Table 7 of the
 
 * `human_vs_machine` task: its performance is only evaluated for `reddit` corpus. 
 ```bash
-python src/eval.py human_vs_machine -p=restore/human_vs_machine.pth --fld=test/reddit
+python src/eval.py human_vs_machine -p=restore/human_vs_machine.pth --data=test/human_vs_fake/reddit
 # expecting accuracy ~0.98
 ```
 
-
-### Human-like classification
 
 ## Citation
 If you use our dataset or model, please cite our [EMNLP paper](https://arxiv.org/)
@@ -205,6 +207,5 @@ If you use our dataset or model, please cite our [EMNLP paper](https://arxiv.org
     title={Dialogue Response RankingTraining with Large-Scale Human Feedback Data},
     author={Xiang Gao and Yizhe Zhang and Michel Galley and Chris Brockett and Bill Dolan},
     year={2020},
-    booktitle={EMNLP}
 }
 ```

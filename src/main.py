@@ -60,14 +60,16 @@ if __name__ == "__main__":
     parser.add_argument('--cpu', action='store_true')
     parser.add_argument('--max_seq_len', type=int, default=50)
     parser.add_argument('--mismatch', action='store_true')
-    parser.add_argument('--min_score_gap', type=int, default=1)
-    parser.add_argument('--min_rank_gap', type=float, default=0)
+    parser.add_argument('--min_score_gap', type=int)
+    parser.add_argument('--min_rank_gap', type=float)
     parser.add_argument('--max_hr_gap', type=float, default=1)
     args = parser.parse_args()
 
     opt = Option(args)
     master = Master(opt)
     if args.task == 'train':
+        assert(args.min_score_gap is not None)
+        assert(args.min_rank_gap is not None)
         master.train()
     elif args.task == 'vali':
         master.vali()
