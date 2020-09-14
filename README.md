@@ -3,13 +3,33 @@
 How likely a dialog response is upvoted by people and/or trigger more replies? This is what **DialogRPT** is learned to predict.
 It is a set of dialog response ranking transformer-based models trained on millions of human feedback data. See [paper](https://arxiv.org/) for more details.
 
-## Interactive Demo
+## Quick Start (TL;DR)
 
-Please check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
+### Scoring dialog responses
+use our models as a evaluation/ranking metric for dialog response generation
+
+```bash
+python src/eval.py --data=data/toy.tsv
+# downloading pretrained model to restore/updown.pth
+# 100% [....................] 1520029114 / 1520029114
+# loading from restore/updown.pth
+# evaluating data/toy.tsv
+# final average score is 0.297 based on 4 samples
+# scores saved to data/toy.tsv.scores.txt
+```
+
+### Interactive Demo
+```
+python src/main.py play -p=restore/updown.pth
+```
+Or check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
 
 In the following example, the model predicts that, given the same context *"I love NLP!"*, the response *"Here’s a free textbook (URL) in case anyone needs it."* is more likely to be upvoted than the response *"Me too!"*.
 
 <img src="doc/demo.PNG" width="700">
+
+
+
 
 ## Install
 
@@ -24,7 +44,7 @@ conda create -n dialogrpt python=3.6
 conda activate dialogrpt
 pip install -r requirements.txt
 ```
-**Step 2.** Download the pretrained models into folder `restore`
+**Step 2.** Although the pretrained models will be downloaded when you need to load them, you can choose to download the them manually with
 ```bash
 wget https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth -P restore
 # TODO: download other models using the links in the table below
@@ -33,12 +53,12 @@ wget https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth -P restore
 | Description    | Task | Pretrained model |
 | :------------- | :-----------: | :-----------: |
 | **Human feedback**: <br> given a context and its two human responses, predict...|     |
-|  ... which gets more upvotes? | `updown` | [link](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) |
-| ... which gets more direct replies? | `width` | [link](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) |
-|  ... which gets longer follow-up thread? | `depth` | [link](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) |
+|  ... which gets more upvotes? | `updown` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) |
+| ... which gets more direct replies? | `width` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) |
+|  ... which gets longer follow-up thread? | `depth` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) |
 | **Human-like** (i.e., human vs fake): <br> given a context and one human response, distinguish it with... |    |
-| ... a random human response | `human_vs_rand` | [link](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
-| ... a machine generated response | `human_vs_machine` | [link](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
+| ... a random human response | `human_vs_rand` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
+| ... a machine generated response | `human_vs_machine` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
 
 
 ## Data
@@ -162,9 +182,9 @@ unzip test.zip
 The performance on `updown`, `depth`, and `width` can be measured with the following commands, respectively.
 The `--min_score_gap` and `--min_rank_gap` arguments are consistent with the values used to measure validation loss during training.
 ```
-python src/eval.py feedback -p=restore/updown.pth --data=test/human_feedback/updown.tsv --min_score_gap=20 --min_rank_gap=0.5
-python src/eval.py feedback -p=restore/depth.pth --data=test/human_feedback/depth.tsv --min_score_gap=4 --min_rank_gap=0.5
-python src/eval.py feedback -p=restore/width.pth --data=test/human_feedback/width.tsv --min_score_gap=4 --min_rank_gap=0.5
+python src/eval.py --task=feedback -p=restore/updown.pth --data=test/human_feedback/updown.tsv --min_score_gap=20 --min_rank_gap=0.5
+python src/eval.py --task=feedback -p=restore/depth.pth --data=test/human_feedback/depth.tsv --min_score_gap=4 --min_rank_gap=0.5
+python src/eval.py --task=feedback -p=restore/width.pth --data=test/human_feedback/width.tsv --min_score_gap=4 --min_rank_gap=0.5
 ```
 
 The expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 5 of the [paper](https://arxiv.org/))
@@ -172,16 +192,16 @@ The expected pairwise accuracy on 5000 test samples is listed in the table below
 | :-------------      | :------: |:------------: |:--------: |
 | Dialog ppl.         |  0.488   | 0.508         | 0.513     | 
 | Reverse dialog ppl. |  0.560   | 0.557         | 0.571     | 
-| **DialogRPT** (ours)| **0.683** | **0.701**  | **0.764** | 
+| **DialogRPT** (ours)| **0.683** | **0.695**  | **0.752** | 
 
 ### Human-like classification
 
 * `human_vs_rand` task: Although the model is trained on `reddit` corpus only, we measured its **zero-shot** performance on several unseen corpora (`twitter`, `dailydialog` and `personachat`)
 ```bash
-python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/reddit
-python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/dailydialog
-python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/twitter
-python src/eval.py human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/personachat
+python src/eval.py --task=human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/reddit
+python src/eval.py --task=human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/dailydialog
+python src/eval.py --task=human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/twitter
+python src/eval.py --task=human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/personachat
 ```
 The expected expected pairwise on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/))
 | `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
@@ -194,13 +214,13 @@ The expected expected pairwise on 5000 test samples is listed in the table below
 
 * `human_vs_machine` task: its performance is only evaluated for `reddit` corpus. 
 ```bash
-python src/eval.py human_vs_machine -p=restore/human_vs_machine.pth --data=test/human_vs_fake/reddit
+python src/eval.py --task=human_vs_machine -p=restore/human_vs_machine.pth --data=test/human_vs_fake/reddit
 # expecting accuracy ~0.98
 ```
 
 
 ## Citation
-If you use our dataset or model, please cite our [EMNLP paper](https://arxiv.org/)
+If you use our dataset or model, please cite our [paper](https://arxiv.org/)
 
 ```
 @inproceedings{gao2020dialogrpt,
