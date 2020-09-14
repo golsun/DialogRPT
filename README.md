@@ -5,8 +5,17 @@ It is a set of dialog response ranking transformer-based models trained on milli
 
 ## Quick Start (TL;DR)
 
+
+### Interactive Demo
+Please check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
+
+In the following example, the model predicts that, given the same context *"I love NLP!"*, the response *"Here’s a free textbook (URL) in case anyone needs it."* is more likely to be upvoted than the response *"Me too!"*.
+
+<img src="doc/demo.PNG" width="700">
+
+
 ### Scoring dialog responses
-use our models as a evaluation/ranking metric for dialog response generation
+Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response`.
 
 ```bash
 python src/eval.py --data=data/toy.tsv
@@ -17,18 +26,6 @@ python src/eval.py --data=data/toy.tsv
 # final average score is 0.297 based on 4 samples
 # scores saved to data/toy.tsv.scores.txt
 ```
-
-### Interactive Demo
-```
-python src/main.py play -p=restore/updown.pth
-```
-Or check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
-
-In the following example, the model predicts that, given the same context *"I love NLP!"*, the response *"Here’s a free textbook (URL) in case anyone needs it."* is more likely to be upvoted than the response *"Me too!"*.
-
-<img src="doc/demo.PNG" width="700">
-
-
 
 
 ## Install

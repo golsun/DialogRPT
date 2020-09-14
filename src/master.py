@@ -225,8 +225,8 @@ class Master:
     def play(self):
         from shared import EOS_token
         self.model.eval()
-        print('[INFO] enter empty to stop')
-        print('[INFO] use %s to delimite turns for a multi-turn context'%EOS_token)
+        print('enter empty to stop')
+        print('use `%s` to delimite turns for a multi-turn context'%EOS_token)
         while True:
             print()
             cxt = input('Context:  ')
