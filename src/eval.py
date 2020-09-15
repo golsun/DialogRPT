@@ -46,7 +46,7 @@ def eval_fake(fld, model, fake, max_n=-1, max_cxt_turn=None):
                 cxt_id = cxt_id.strip()
             else:
                 cxt = ss0[0]
-                cxt_id = cxt.strip()
+                cxt_id = cxt.strip().replace(' ','')
             cxts[cxt_id] = cxt.strip()
             rsps[cxt_id] = [s.split(_cat_)[0] for s in ss[1:]]
             if i == max_n:
@@ -61,7 +61,8 @@ def eval_fake(fld, model, fake, max_n=-1, max_cxt_turn=None):
     n = 0
     for cxt_id in reals:
         if cxt_id not in fakes:
-            print('[WARNING] could not find fake examples for [%s]'%k)
+            print('[WARNING] could not find fake examples for [%s]'%cxt_id)
+            #pdb.set_trace()
             continue
         scores = predict(model, cxts[cxt_id], reals[cxt_id] + fakes[cxt_id], max_cxt_turn=max_cxt_turn)
         ix_score = sorted([(scores[i], i) for i in range(len(scores))], reverse=True)
@@ -145,10 +146,31 @@ def predict_tsv(path, model, max_n=-1, max_cxt_turn=None):
 
 
 
+def play(model, max_cxt_turn=None):
+    from shared import EOS_token
+    model.eval()
+    print('enter empty to stop')
+    print('use `%s` to delimite turns for a multi-turn context'%EOS_token)
+    while True:
+        print()
+        cxt = input('Context:  ')
+        if not cxt:
+            break
+        hyp = input('Response: ')
+        if not hyp:
+            break
+        score = model.predict(cxt, [hyp], max_cxt_turn=max_cxt_turn)
+        if isinstance(score, dict):
+            ss = ['%s = %.3f'%(k, score[k][0]) for k in score]
+            print(', '.join(ss))
+        else:
+            print('score = %.3f'%score[0])
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--task', type=str, default='pred')
+    parser.add_argument('task', type=str)
     parser.add_argument('--data', type=str)
     parser.add_argument('--max_cxt_turn', type=int, default=2)
     parser.add_argument('--path_pth', '-p', type=str)
@@ -160,13 +182,16 @@ if __name__ == "__main__":
 
     cuda = False if args.cpu else torch.cuda.is_available()
     model = get_model(args.path_pth, cuda)
-    if args.task in ['human_vs_rand', 'human_vs_machine']:
+    if args.task in ['eval_human_vs_rand', 'eval_human_vs_machine']:
         fake = args.task.split('_')[-1]
         eval_fake(args.data, model, fake, max_n=args.max_n, max_cxt_turn=args.max_cxt_turn)
 
-    elif args.task == 'feedback':
+    elif args.task == 'eval_human_feedback':
         eval_feedback(args.data, model, max_cxt_turn=args.max_cxt_turn, 
             min_rank_gap=args.min_rank_gap, max_n=args.max_n, min_score_gap=args.min_score_gap)
 
     elif args.task == 'pred':
         predict_tsv(args.data, model, max_n=args.max_n, max_cxt_turn=args.max_cxt_turn)
+
+    elif args.task == 'play':
+        play(model, max_cxt_turn=args.max_cxt_turn)

@@ -220,24 +220,3 @@ class Master:
     def save(self, path):
         torch.save(self._model.state_dict(), path)
         self.print('saved to '+path)
-
-
-    def play(self):
-        from shared import EOS_token
-        self.model.eval()
-        print('enter empty to stop')
-        print('use `%s` to delimite turns for a multi-turn context'%EOS_token)
-        while True:
-            print()
-            cxt = input('Context:  ')
-            if not cxt:
-                break
-            hyp = input('Response: ')
-            if not hyp:
-                break
-            score = self._model.predict(cxt, [hyp])
-            if isinstance(score, dict):
-                ss = ['%s = %.3f'%(k, score[k][0]) for k in score]
-                print(', '.join(ss))
-            else:
-                print('score = %.3f'%score[0])

@@ -73,5 +73,3 @@ if __name__ == "__main__":
         master.train()
     elif args.task == 'vali':
         master.vali()
-    elif args.task == 'play':
-        master.play()
