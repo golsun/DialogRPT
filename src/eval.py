@@ -1,4 +1,4 @@
-import torch, pdb
+import torch, pdb, os
 from shared import _cat_
 import numpy as np
 from model import OptionInfer, Scorer
@@ -40,8 +40,13 @@ def eval_fake(fld, model, fake, max_n=-1, max_cxt_turn=None):
         rsps = dict()
         for i, line in enumerate(open(path, encoding='utf-8')):
             ss = line.strip('\n').split('\t')
-            cxt, cxt_id = ss[0].split(_cat_)
-            cxt_id = cxt_id.strip()
+            ss0 =  ss[0].split(_cat_)
+            if len(ss0) == 2:
+                cxt, cxt_id = ss0
+                cxt_id = cxt_id.strip()
+            else:
+                cxt = ss0[0]
+                cxt_id = cxt.strip()
             cxts[cxt_id] = cxt.strip()
             rsps[cxt_id] = [s.split(_cat_)[0] for s in ss[1:]]
             if i == max_n:
