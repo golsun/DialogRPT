@@ -151,10 +151,9 @@ class JointScorer(ScorerBase):
         
         for k in paths:
             path = paths[k]
-            print('[%s] loading from %s'%(k, path))
-            weights = torch.load(path)
+            print('setting up model `%s`'%k)
             scorer = Scorer(OptionInfer(cuda=self.opt.cuda))
-            scorer.load_state_dict(weights)
+            scorer.load(path)
             setattr(self, 'scorer_%s'%k, scorer)
 
 

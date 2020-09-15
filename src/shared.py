@@ -7,7 +7,7 @@ EOS_token = '_EOS_'
 def download_model(path):
     if path is None:
         return
-    import wget, os
+    import os, subprocess
     if os.path.exists(path):
         return
     links = dict()
@@ -15,5 +15,6 @@ def download_model(path):
         links['restore/%s.pth'%k] = 'https://xiagnlp2.blob.core.windows.net/dialogrpt/%s.pth'%k
     if path not in links:
         return
-    print('downloading pretrained model to '+path)
-    wget.download(links[path], out=path)
+    cmd = [ 'wget', links[path], '-P', 'restore']
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    process.communicate()
