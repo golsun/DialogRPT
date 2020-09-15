@@ -18,7 +18,7 @@ In the following example, the model predicts that, given the same context *"I lo
 Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response`.
 
 ```bash
-python src/eval.py --data=data/toy.tsv
+python src/eval.py --data=data/toy.tsv -p=restore/updown.pth
 # downloading pretrained model to restore/updown.pth
 # 100% [....................] 1520029114 / 1520029114
 # loading from restore/updown.pth

@@ -146,7 +146,7 @@ if __name__ == "__main__":
     parser.add_argument('--task', type=str, default='pred')
     parser.add_argument('--data', type=str)
     parser.add_argument('--max_cxt_turn', type=int, default=2)
-    parser.add_argument('--path_pth', '-p', type=str, default='restore/updown.pth')
+    parser.add_argument('--path_pth', '-p', type=str)
     parser.add_argument('--cpu', action='store_true')
     parser.add_argument('--max_n', type=int, default=5000)
     parser.add_argument('--min_score_gap', type=int)

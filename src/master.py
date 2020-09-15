@@ -237,7 +237,7 @@ class Master:
                 break
             score = self._model.predict(cxt, [hyp])
             if isinstance(score, dict):
-                print('score = %.3f'%score[0])
-            else:
                 ss = ['%s = %.3f'%(k, score[k][0]) for k in score]
                 print(', '.join(ss))
+            else:
+                print('score = %.3f'%score[0])
