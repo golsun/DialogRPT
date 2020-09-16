@@ -229,5 +229,6 @@ If you use our dataset or model, please cite our [paper](https://arxiv.org/abs/2
     title={Dialogue Response RankingTraining with Large-Scale Human Feedback Data},
     author={Xiang Gao and Yizhe Zhang and Michel Galley and Chris Brockett and Bill Dolan},
     year={2020},
+    booktitle={EMNLP}
 }
 ```
