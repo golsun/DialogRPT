@@ -1,4 +1,4 @@
-import torch, pdb, os
+import torch, pdb, os, json
 from shared import _cat_
 import numpy as np
 from model import OptionInfer, Scorer
@@ -118,31 +118,61 @@ def eval_feedback(path, model, max_n=-1, max_cxt_turn=None, min_rank_gap=0., min
 
 
 
-def predict_tsv(path, model, max_n=-1, max_cxt_turn=None):
-    print('evaluating %s'%path)
-    scores = []
+def rank_hyps(path, model, max_n=-1, max_cxt_turn=None):
+    """
+    rank the responses for each given cxt with model
+    path is the input file, where in each line, 0-th column is the context, and the rest are responses
+    output a jsonl file, and can be read with function `read_ranked_jsonl`
+    """
+
+    print('ranking %s'%path)
+    lines = []
     n = 0
-    for line in open(path, encoding='utf-8'):
-        if line.strip().startswith('#'):
-            continue
+    sum_avg_score = 0
+    sum_top_score = 0
+    for i, line in enumerate(open(path, encoding='utf-8')):
         cc = line.strip('\n').split('\t')
-        if len(cc) != 2:
-            print('[WARNING] expecting exactly two columns: %s'%line)
-            scores.append(np.nan)
+        if len(cc) < 2:
+            print('[WARNING] line %i only has %i columns, ignored'%(i, len(cc)))
             continue
-        cxt, hyp = cc
-        score = predict(model, cxt, [hyp], max_cxt_turn=max_cxt_turn)
-        scores.append(score[0])
+        cxt = cc[0]
+        hyps = cc[1:]
+        scores = predict(model, cxt, hyps, max_cxt_turn=max_cxt_turn)
+        d = {'line_id':i, 'cxt': cxt}
+        scored = []
+        for j, hyp in enumerate(hyps):
+            scored.append((float(scores[j]), hyp))
+        d['hyps'] = list(sorted(scored, reverse=True))
+        lines.append(json.dumps(d))
+        sum_avg_score += np.mean(scores)
+        sum_top_score += np.max(scores)
         n += 1
+
         if n % 10 == 0:
-            print('evaluated %i, avg score %.3f'%(n, np.mean(scores)))
+            print('processed %i line, avg_hyp_score %.3f, top_hyp_score %.3f'%(
+                    n, 
+                    sum_avg_score/n,
+                    sum_top_score/n,
+                    ))
         if n == max_n:
             break
-    print('final average score is %.3f based on %i samples'%(np.mean(scores), n))
-    path_out = path+'.scores.txt'
+    print('totally processed %i line, avg_hyp_score %.3f, top_hyp_score %.3f'%(
+                    n, 
+                    sum_avg_score/n,
+                    sum_top_score/n,
+                    ))
+    path_out = path+'.ranked.jsonl'
     with open(path_out, 'w') as f:
-        f.write('\n'.join(['%.4f'%score for score in scores]))
-    print('scores saved to '+path_out)
+        f.write('\n'.join(lines))
+    print('results saved to '+path_out)
+    print('results can be read with function `read_ranked_jsonl`')
+    data = read_ranked_jsonl(path_out)
+    pdb.set_trace()
+
+
+def read_ranked_jsonl(path):
+    """ read the jsonl file ouput by function rank_hyps"""
+    return [json.loads(line) for line in open(path, encoding="utf-8")]
 
 
 
@@ -190,8 +220,8 @@ if __name__ == "__main__":
         eval_feedback(args.data, model, max_cxt_turn=args.max_cxt_turn, 
             min_rank_gap=args.min_rank_gap, max_n=args.max_n, min_score_gap=args.min_score_gap)
 
-    elif args.task == 'pred':
-        predict_tsv(args.data, model, max_n=args.max_n, max_cxt_turn=args.max_cxt_turn)
+    elif args.task == 'rank':
+        rank_hyps(args.data, model, max_n=args.max_n, max_cxt_turn=args.max_cxt_turn)
 
     elif args.task == 'play':
         play(model, max_cxt_turn=args.max_cxt_turn)
