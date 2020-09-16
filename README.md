@@ -1,10 +1,11 @@
 # DialogRPT: pretrained dialog response ranking models
 
 How likely a dialog response is upvoted by people and/or trigger more replies? This is what **DialogRPT** is learned to predict.
-It is a set of dialog response ranking transformer-based models trained on millions of human feedback data. See [paper](https://arxiv.org/) for more details.
+It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on millions of human feedback data. 
+It can be used to improve existing dialog generation model (e.g., [DialoGPT](https://github.com/microsoft/DialoGPT)) by re-ranking the generated response candidates.
+See our [EMNLP paper](https://arxiv.org/) for more details. 
 
 ## Quick Start (TL;DR)
-
 
 ### Interactive Demo
 Please check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
@@ -14,17 +15,18 @@ In the following example, the model predicts that, given the same context *"I lo
 <img src="doc/demo.PNG" width="700">
 
 
-### Scoring dialog responses
+### Ranking dialog responses
 Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response`.
 
 ```bash
-python src/eval.py --data=data/toy.tsv -p=restore/updown.pth
+python src/score.py rank --data=doc/toy.tsv -p=restore/updown.pth
 # downloading pretrained model to restore/updown.pth
 # 100% [....................] 1520029114 / 1520029114
 # loading from restore/updown.pth
-# evaluating data/toy.tsv
-# final average score is 0.297 based on 4 samples
-# scores saved to data/toy.tsv.scores.txt
+# ranking doc/toy.tsv
+# totally processed 2 line, avg_hyp_score 0.264, top_hyp_score 0.409
+# results saved to doc/toy.tsv.ranked.jsonl
+# results can be read with function `read_ranked_jsonl`
 ```
 
 
@@ -179,9 +181,9 @@ unzip test.zip
 The performance on `updown`, `depth`, and `width` can be measured with the following commands, respectively.
 The `--min_score_gap` and `--min_rank_gap` arguments are consistent with the values used to measure validation loss during training.
 ```
-python src/eval.py --task=feedback -p=restore/updown.pth --data=test/human_feedback/updown.tsv --min_score_gap=20 --min_rank_gap=0.5
-python src/eval.py --task=feedback -p=restore/depth.pth --data=test/human_feedback/depth.tsv --min_score_gap=4 --min_rank_gap=0.5
-python src/eval.py --task=feedback -p=restore/width.pth --data=test/human_feedback/width.tsv --min_score_gap=4 --min_rank_gap=0.5
+python src/score.py eval_human_feedback -p=restore/updown.pth --data=test/human_feedback/updown.tsv --min_score_gap=20 --min_rank_gap=0.5
+python src/score.py eval_human_feedback -p=restore/depth.pth --data=test/human_feedback/depth.tsv --min_score_gap=4 --min_rank_gap=0.5
+python src/score.py eval_human_feedback -p=restore/width.pth --data=test/human_feedback/width.tsv --min_score_gap=4 --min_rank_gap=0.5
 ```
 
 The expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 5 of the [paper](https://arxiv.org/))
@@ -195,10 +197,10 @@ The expected pairwise accuracy on 5000 test samples is listed in the table below
 
 * `human_vs_rand` task: Although the model is trained on `reddit` corpus only, we measured its **zero-shot** performance on several unseen corpora (`twitter`, `dailydialog` and `personachat`)
 ```bash
-python src/eval.py --task=human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/reddit
-python src/eval.py --task=human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/dailydialog
-python src/eval.py --task=human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/twitter
-python src/eval.py --task=human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/personachat
+python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/reddit
+python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/dailydialog
+python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/twitter
+python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/personachat
 ```
 The expected expected pairwise on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/))
 | `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
@@ -207,11 +209,11 @@ The expected expected pairwise on 5000 test samples is listed in the table below
 | Dialog ppl.         |  0.560   | 0.176         | 0.107     | 0.108         |
 | Reverse dialog ppl. |  0.775   | 0.457         | 0.440     | 0.449         |
 | [ConveRT](https://arxiv.org/abs/1911.03688) |  0.760   | 0.380         | 0.439     | 0.197         |
-| **DialogRPT** (ours)| **0.886** | **0.574**  | **0.510** | **0.464**     |
+| **DialogRPT** (ours)| **0.886** | **0.621**  | **0.548** | **0.479**     |
 
 * `human_vs_machine` task: its performance is only evaluated for `reddit` corpus. 
 ```bash
-python src/eval.py --task=human_vs_machine -p=restore/human_vs_machine.pth --data=test/human_vs_fake/reddit
+python src/score.py --task=eval_human_vs_machine -p=restore/human_vs_machine.pth --data=test/human_vs_fake/reddit
 # expecting accuracy ~0.98
 ```
 
