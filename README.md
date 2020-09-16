@@ -3,7 +3,7 @@
 How likely a dialog response is upvoted by people and/or trigger more replies? This is what **DialogRPT** is learned to predict.
 It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on millions of human feedback data. 
 It can be used to improve existing dialog generation model (e.g., [DialoGPT](https://github.com/microsoft/DialoGPT)) by re-ranking the generated response candidates.
-See our [EMNLP paper](https://arxiv.org/) for more details. 
+See our [EMNLP paper](https://arxiv.org/abs/2009.06978/) for more details. 
 
 ## Quick Start (TL;DR)
 
@@ -186,7 +186,7 @@ python src/score.py eval_human_feedback -p=restore/depth.pth --data=test/human_f
 python src/score.py eval_human_feedback -p=restore/width.pth --data=test/human_feedback/width.tsv --min_score_gap=4 --min_rank_gap=0.5
 ```
 
-The expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 5 of the [paper](https://arxiv.org/))
+The expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 5 of the [paper](https://arxiv.org/abs/2009.06978))
 | human feedback     | `updown` | `depth` | `width` |
 | :-------------      | :------: |:------------: |:--------: |
 | Dialog ppl.         |  0.488   | 0.508         | 0.513     | 
@@ -202,7 +202,7 @@ python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/
 python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/twitter
 python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/personachat
 ```
-The expected expected pairwise on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/))
+The expected expected pairwise on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/abs/2009.06978))
 | `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
 | :-------------      | :------: |:------------: |:--------: |:------------: |
 | BM25                |  0.309   | 0.182         | 0.178     | 0.117         |
@@ -219,7 +219,7 @@ python src/score.py --task=eval_human_vs_machine -p=restore/human_vs_machine.pth
 
 
 ## Citation
-If you use our dataset or model, please cite our [paper](https://arxiv.org/)
+If you use our dataset or model, please cite our [paper](https://arxiv.org/abs/2009.06978)
 
 ```
 @inproceedings{gao2020dialogrpt,
