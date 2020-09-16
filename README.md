@@ -16,8 +16,8 @@ In the following example, the model predicts that, given the same context *"I lo
 
 
 ### Ranking dialog responses
-Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response0 \t response1 ...`. See example [input file](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.updown.jsonl) and its output files ([single model](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv), [ensemble model](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.ensemble.jsonl))
-
+Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response0 \t response1 ...`. See example [input file](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv)
+* Using a single ranker (see [expected output](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.updown.jsonl))
 ```bash
 python src/score.py rank --data=doc/toy.tsv -p=restore/updown.pth
 # downloading pretrained model to restore/updown.pth
@@ -28,7 +28,10 @@ python src/score.py rank --data=doc/toy.tsv -p=restore/updown.pth
 # results saved to doc/toy.tsv.ranked.jsonl
 # results can be read with function `read_ranked_jsonl`
 ```
-
+* Using an ensemble model (see [expected output](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.ensemble.jsonl))
+```bash
+python src/score.py rank --data=doc/toy.tsv -p=restore/ensemble.yml
+```
 
 ## Install
 
