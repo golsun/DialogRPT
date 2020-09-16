@@ -5,10 +5,17 @@ from model import OptionInfer, Scorer
 
 
 def get_model(path, cuda=True):
-    model = Scorer(OptionInfer(cuda))
-    model.load(path)
-    if cuda:
-        model.cuda()
+    opt = OptionInfer(cuda)
+    if path.endswith('.yaml') or path.endswith('.yml'):
+        from model import JointScorer
+        model = JointScorer(opt)
+        model.load(path)
+    if path.endswith('pth'):
+        from model import Scorer
+        model = Scorer(opt)
+        model.load(path)
+        if cuda:
+            model.cuda()
     return model
 
 

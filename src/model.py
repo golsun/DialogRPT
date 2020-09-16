@@ -154,6 +154,8 @@ class JointScorer(ScorerBase):
             print('setting up model `%s`'%k)
             scorer = Scorer(OptionInfer(cuda=self.opt.cuda))
             scorer.load(path)
+            if self.opt.cuda:
+                scorer.cuda()
             setattr(self, 'scorer_%s'%k, scorer)
 
 
