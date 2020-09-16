@@ -6,7 +6,9 @@
 
 # **Dialog** **R**anking **P**retrained **T**ransformers
 
-How likely a dialog response is upvoted 👍 and/or trigger more replies 💬? This is what **DialogRPT** is learned to predict.
+> How likely a dialog response is upvoted 👍 and/or trigger more replies 💬? 
+
+This is what **DialogRPT** is learned to predict.
 It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on millions of human feedback data. 
 It can be used to improve existing dialog generation model (e.g., [DialoGPT](https://github.com/microsoft/DialoGPT)) by re-ranking the generated response candidates.
 See our [EMNLP paper](https://arxiv.org/abs/2009.06978/) for more details. 
