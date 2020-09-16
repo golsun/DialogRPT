@@ -6,7 +6,7 @@
 
 # **Dialog** **R**anking **P**retrained **T**ransformers
 
-How likely a dialog response is upvoted by people and/or trigger more replies? This is what **DialogRPT** is learned to predict.
+How likely a dialog response is upvoted 👍 and/or trigger more replies 💬? This is what **DialogRPT** is learned to predict.
 It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on millions of human feedback data. 
 It can be used to improve existing dialog generation model (e.g., [DialoGPT](https://github.com/microsoft/DialoGPT)) by re-ranking the generated response candidates.
 See our [EMNLP paper](https://arxiv.org/abs/2009.06978/) for more details. 
@@ -211,7 +211,7 @@ python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/
 python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/twitter
 python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/personachat
 ```
-The expected expected pairwise on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/abs/2009.06978))
+The expected expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/abs/2009.06978))
 | `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
 | :-------------      | :------: |:------------: |:--------: |:------------: |
 | BM25                |  0.309   | 0.182         | 0.178     | 0.117         |
@@ -235,5 +235,6 @@ If you use our dataset or model, please cite our [paper](https://arxiv.org/abs/2
     title={Dialogue Response RankingTraining with Large-Scale Human Feedback Data},
     author={Xiang Gao and Yizhe Zhang and Michel Galley and Chris Brockett and Bill Dolan},
     year={2020},
+    booktitle={EMNLP}
 }
 ```
