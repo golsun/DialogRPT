@@ -205,7 +205,7 @@ python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/
 python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/twitter
 python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/personachat
 ```
-The expected expected pairwise on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/abs/2009.06978))
+The expected expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/abs/2009.06978))
 | `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
 | :-------------      | :------: |:------------: |:--------: |:------------: |
 | BM25                |  0.309   | 0.182         | 0.178     | 0.117         |
