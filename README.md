@@ -1,4 +1,10 @@
-# DialogRPT: pretrained dialog response ranking models
+<p align="center">
+    <br>
+    <img src="doc/icon.png" width="400"/>
+    <br>
+<p>
+
+# **Dialog** **R**anking **P**retrained **T**ransformers
 
 How likely a dialog response is upvoted by people and/or trigger more replies? This is what **DialogRPT** is learned to predict.
 It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on millions of human feedback data. 
