@@ -16,7 +16,7 @@ In the following example, the model predicts that, given the same context *"I lo
 
 
 ### Ranking dialog responses
-Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response0 \t response1 ...`. (see [example](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv))
+Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response0 \t response1 ...`. See example [input file](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.updown.jsonl) and its output files ([single model](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv), [ensemble model](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.ensemble.jsonl))
 
 ```bash
 python src/score.py rank --data=doc/toy.tsv -p=restore/updown.pth

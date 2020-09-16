@@ -29,7 +29,13 @@ def predict(model, cxt, hyps, max_cxt_turn=None):
         _scores = model.predict(cxt, hyps[i0: i1], max_cxt_turn=max_cxt_turn)
         scores.append(_scores)
         i0 = i1
-    return np.concatenate(scores)
+    if isinstance(_scores, dict):
+        d_scores = dict()
+        for k in _scores:
+            d_scores[k] = np.concatenate([_scores[k] for _scores in scores])
+        return d_scores
+    else:
+        return np.concatenate(scores)
 
 
     
@@ -147,12 +153,23 @@ def rank_hyps(path, model, max_n=-1, max_cxt_turn=None):
         scores = predict(model, cxt, hyps, max_cxt_turn=max_cxt_turn)
         d = {'line_id':i, 'cxt': cxt}
         scored = []
-        for j, hyp in enumerate(hyps):
-            scored.append((float(scores[j]), hyp))
+        if isinstance(scores, dict):
+            sum_avg_score += np.mean(scores['final'])
+            sum_top_score += np.max(scores['final'])
+            for j, hyp in enumerate(hyps):
+                tup = (
+                    float(scores['final'][j]),
+                    dict([(k, float(scores[k][j])) for k in scores]),
+                    hyp,
+                    )
+                scored.append(tup)
+        else:
+            sum_avg_score += np.mean(scores)
+            sum_top_score += np.max(scores)
+            for j, hyp in enumerate(hyps):
+                scored.append((float(scores[j]), hyp))
         d['hyps'] = list(sorted(scored, reverse=True))
         lines.append(json.dumps(d))
-        sum_avg_score += np.mean(scores)
-        sum_top_score += np.max(scores)
         n += 1
 
         if n % 10 == 0:
@@ -173,8 +190,6 @@ def rank_hyps(path, model, max_n=-1, max_cxt_turn=None):
         f.write('\n'.join(lines))
     print('results saved to '+path_out)
     print('results can be read with function `read_ranked_jsonl`')
-    data = read_ranked_jsonl(path_out)
-    pdb.set_trace()
 
 
 def read_ranked_jsonl(path):
