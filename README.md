@@ -60,7 +60,7 @@ conda create -n dialogrpt python=3.6
 conda activate dialogrpt
 pip install -r requirements.txt
 ```
-**Step 2.** Although the pretrained models will be downloaded when you need to load them, you can choose to download the them manually with
+**Step 3.** Although the pretrained models will be downloaded when you need to load them, you can choose to download the them manually with
 ```bash
 wget https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth -P restore
 # TODO: download other models using the links in the table below
@@ -203,7 +203,7 @@ python src/score.py eval_human_feedback -p=restore/depth.pth --data=test/human_f
 python src/score.py eval_human_feedback -p=restore/width.pth --data=test/human_feedback/width.tsv --min_score_gap=4 --min_rank_gap=0.5
 ```
 
-The expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 5 of the [paper](https://arxiv.org/abs/2009.06978))
+The expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 5 of the [paper](https://arxiv.org/abs/2009.06978)). Note even by random guess one can get accuracy of 0.500.
 | human feedback     | `updown` | `depth` | `width` |
 | :-------------      | :------: |:------------: |:--------: |
 | Dialog ppl.         |  0.488   | 0.508         | 0.513     | 
@@ -219,7 +219,8 @@ python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/
 python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/twitter
 python src/score.py eval_human_vs_rand -p=restore/human_vs_rand.pth --data=test/human_vs_fake/personachat
 ```
-The expected expected pairwise accuracy on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/abs/2009.06978))
+The expected `hits@k` metric on 5000 test samples is listed in the table below (from Table 7 of the [paper](https://arxiv.org/abs/2009.06978)).
+`hits@k` measures, for the same context, given `k` positive responses and `n` negative responses, how many positive responses are in top-`k` of the ranked responses.
 | `human_vs_rand`     | `reddit` | `dailydialog` | `twitter` | `personachat` |
 | :-------------      | :------: |:------------: |:--------: |:------------: |
 | BM25                |  0.309   | 0.182         | 0.178     | 0.117         |
