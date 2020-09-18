@@ -13,6 +13,12 @@ It is a set of dialog response ranking models proposed by [Microsoft Research NL
 It can be used to improve existing dialog generation model (e.g., [DialoGPT](https://github.com/microsoft/DialoGPT)) by re-ranking the generated response candidates.
 See our [EMNLP paper](https://arxiv.org/abs/2009.06978/) for more details. 
 
+Links
+* [Paper](https://arxiv.org/abs/2009.06978/)
+* [Demo](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
+* [Discussion on Reddit](https://www.reddit.com/r/MachineLearning/comments/iurfdf/r_this_model_predicts_which_reddit_comment_gets/)
+* [An inventory of MSR NLP team projects](https://github.com/microsoft/MSR-NLP-Projects)
+
 ## Quick Start (TL;DR)
 
 ### Interactive Demo
