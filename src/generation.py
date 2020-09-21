@@ -2,6 +2,7 @@
 
 import torch, pdb
 import numpy as np
+from shared import download_model
 
 class GPT2Generator:
 
@@ -10,6 +11,7 @@ class GPT2Generator:
         self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         model_config = GPT2Config(n_embd=1024, n_layer=24, n_head=16)        
         self.model = GPT2LMHeadModel(model_config)
+        download_model(path)
         weights = torch.load(path)
         if "lm_head.decoder.weight" in weights:
             weights["lm_head.weight"] = weights["lm_head.decoder.weight"]
