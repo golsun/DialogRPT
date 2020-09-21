@@ -13,6 +13,7 @@ def download_model(path):
     links = dict()
     for k in ['updown', 'depth', 'width', 'human_vs_rand', 'human_vs_machine']:
         links['restore/%s.pth'%k] = 'https://xiagnlp2.blob.core.windows.net/dialogrpt/%s.pth'%k
+    links['restore/medium_ft.pkl'] = 'https://convaisharables.blob.core.windows.net/lsp/multiref/medium_ft.pkl'
     if path not in links:
         return
     cmd = [ 'wget', links[path], '-P', 'restore']
