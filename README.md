@@ -32,7 +32,7 @@ In the following example, the model predicts that, given the same context "I lov
 ```
 python src/score.py play -p=restore/updown.pth
 ```
-|  | Response of "I love NLP!"  | Score |
+|  | Assumed response of "I love NLP!"  | Ranker Score |
 | :-------------: | :----------- | :-----------: | 
 |  A |  Me too! | 0.111 |
 |  B |  Here’s a free textbook (URL) in case anyone needs it. | 0.613|
@@ -43,7 +43,7 @@ For example, given the context *"Can we restart 2020?"*, DialoGPT may return the
 ```
 !python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/updown.pth
 ```
-|  | Machine generated response <br> of "Can we restart 2020?" | Generation Probability | RaNker Score |
+|  | Machine generated response <br> of "Can we restart 2020?" | Generation Probability | Ranker Score |
 | :-------------: | :----------- | :-----------: | :--: |
 |  A |  No, we can't. | 0.314 | 0.350 |
 |  B |  No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe | 0.210 | 0.506 |
