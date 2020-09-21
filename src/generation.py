@@ -76,7 +76,7 @@ class GPT2Generator:
 
     def play(self, topk=3, topp=0.8, beam=10):
         while True:
-            cxt = input('cxt:\t')
+            cxt = input('\ncxt:\t')
             if not cxt:
                 break
             ret = self.predict(cxt, topk=topk, topp=topp, beam=beam)
@@ -109,7 +109,7 @@ class Integrated:
 
     def play(self, topk=3, topp=0.8, beam=10, wt_ranker=0.5):
         while True:
-            cxt = input('cxt:\t')
+            cxt = input('\ncxt:\t')
             if not cxt:
                 break
             ret = self.predict(cxt, topk=topk, topp=topp, beam=beam, wt_ranker=wt_ranker)
