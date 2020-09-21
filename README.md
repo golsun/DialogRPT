@@ -28,6 +28,15 @@ In the following example, the model predicts that, given the same context *"I lo
 
 <img src="doc/demo.PNG" width="700">
 
+Furthermore, the **rankers can be integrated with generators**. For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "We can't." has a high generation probability, but less interesting. So the rankers will put in in lower position after reranking.
+
+<img src="doc/demo_rerank.PNG" width="700">
+
+|  | Machine generated response <br> of "Can we restart 2020?" | Generation Probability | RaNker Score |
+| :-------------: | :----------- | :-----------: | :--: |
+|  A |  No, we can't. | 0.314 | 0.350 |
+|  B |  No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe | 0.210 | 0.506 |
+
 
 ### Ranking dialog responses
 Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response0 \t response1 ...`. See example [input file](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv)
