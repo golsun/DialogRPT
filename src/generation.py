@@ -89,8 +89,8 @@ class Integrated:
         self.generator = generator
         self.ranker = ranker
     
-    def predict(self, cxt, topk=3, beam=10, wt_ranker=0.5, max_cxt_turn=2):
-        prob_hyp = self.generator.predict(cxt, topk=topk, beam=beam)
+    def predict(self, cxt, topk=3, topp=0.8, beam=10, wt_ranker=0.5, max_cxt_turn=2):
+        prob_hyp = self.generator.predict(cxt, topk=topk, topp=topp, beam=beam)
         probs = np.array([prob for prob, _ in prob_hyp])
         hyps = [hyp for _, hyp in prob_hyp]
         if wt_ranker > 0:
