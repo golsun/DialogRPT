@@ -24,7 +24,7 @@ class GPT2Generator:
             self.model.cuda()
     
 
-    def predict(self, cxt, topk=3, beam=10, max_t=30):
+    def predict(self, cxt, topk=3, topp=0.8, beam=10, max_t=30):
         conditioned_tokens = self.tokenizer.encode(cxt) + [self.ix_EOS]
         len_cxt = len(conditioned_tokens)
         tokens = torch.tensor([conditioned_tokens]).view(1, -1)
@@ -39,8 +39,12 @@ class GPT2Generator:
             logP = torch.log_softmax(predictions[:, -1, :], dim=-1)
             next_logP, next_token = torch.topk(logP, topk)
             sumlogP_ij = []
+            sum_prob = 0
             for i in range(tokens.shape[0]):
                 for j in range(topk):
+                    sum_prob += np.exp(logP[i, j].item())
+                    if sum_prob > topp:
+                        break
                     if next_token[i, j] == self.ix_EOS:
                         seq = torch.cat([tokens[i, len_cxt:], next_token[i, j].view(1)], dim=-1)
                         if self.cuda:
@@ -53,6 +57,7 @@ class GPT2Generator:
                         sumlogP_ij.append((
                             sum_logP[i] + next_logP[i, j].item(), 
                             i, j))
+                
 
             if not sumlogP_ij:
                 break
@@ -69,12 +74,12 @@ class GPT2Generator:
 
         return finished
 
-    def play(self, topk=3, beam=10):
+    def play(self, topk=3, topp=0.8, beam=10):
         while True:
             cxt = input('cxt:\t')
             if not cxt:
                 break
-            ret = self.predict(cxt, topk=topk, beam=beam)
+            ret = self.predict(cxt, topk=topk, topp=topp, beam=beam)
             for prob, hyp in sorted(ret, reverse=True):
                 print('%.3f\t%s'%(prob, hyp))
 
@@ -102,12 +107,12 @@ class Integrated:
         return ret
 
 
-    def play(self, topk=3, beam=10, wt_ranker=0.5):
+    def play(self, topk=3, topp=0.8, beam=10, wt_ranker=0.5):
         while True:
             cxt = input('cxt:\t')
             if not cxt:
                 break
-            ret = self.predict(cxt, topk=topk, beam=beam, wt_ranker=wt_ranker)
+            ret = self.predict(cxt, topk=topk, topp=topp, beam=beam, wt_ranker=wt_ranker)
             for final, prob_gen, score_ranker, hyp in ret:
                 print('%.3f gen %.3f ranker %.3f\t%s'%(final, prob_gen, score_ranker, hyp))
 
@@ -121,11 +126,15 @@ if __name__ == "__main__":
     parser.add_argument('--topk', type=int, default=3)
     parser.add_argument('--beam', type=int, default=3)
     parser.add_argument('--wt_ranker', type=float, default=1.)
+    parser.add_argument('--topp', type=float, default=0.8)
     args = parser.parse_args()
 
     cuda = False if args.cpu else torch.cuda.is_available()
     generator = GPT2Generator(args.path_generator, cuda)
-    from score import get_model
-    ranker = get_model(args.path_ranker, cuda)
-    integrated = Integrated(generator, ranker)
-    integrated.play(args.topk, args.beam, args.wt_ranker)
+    if args.path_ranker is None:
+        generator.play(topk=args.topk, beam=args.beam, topp=args.topp)
+    else:
+        from score import get_model
+        ranker = get_model(args.path_ranker, cuda)
+        integrated = Integrated(generator, ranker)
+        integrated.play(topk=args.topk, beam=args.beam, topp=args.topp, wt_ranker=args.wt_ranker)
