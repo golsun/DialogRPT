@@ -22,16 +22,27 @@ Links
 ## Quick Start (TL;DR)
 
 ### Interactive Demo
-Please check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
-
-In the following example, the model predicts that, given the same context *"I love NLP!"*, the response *"Here’s a free textbook (URL) in case anyone needs it."* is more likely to be upvoted than the response *"Me too!"*.
 
 <img src="doc/demo.PNG" width="700">
 
-Furthermore, the **rankers can be integrated with generators**. For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "We can't." has a high generation probability, but less interesting. So the rankers will put in in lower position after reranking.
+Please check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
 
-<img src="doc/demo_rerank.png" width="700">
+**Option1: rankers only.** 
+In the following example, the model predicts that, given the same context "I love NLP!", response B is gets more upvotes than response B.
+```
+python src/score.py play -p=restore/updown.pth
+```
+|  | Response of "I love NLP!"  | Score |
+| :-------------: | :----------- | :-----------: | 
+|  A |  Me too! | 0.111 |
+|  B |  Here’s a free textbook (URL) in case anyone needs it. | 0.613|
 
+
+**Option2: generator + ranker.** 
+For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "We can't." has a high generation probability, but less interesting. So the rankers will put in in lower position after reranking.
+```
+!python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/updown.pth
+```
 |  | Machine generated response <br> of "Can we restart 2020?" | Generation Probability | RaNker Score |
 | :-------------: | :----------- | :-----------: | :--: |
 |  A |  No, we can't. | 0.314 | 0.350 |
