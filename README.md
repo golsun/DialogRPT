@@ -30,7 +30,7 @@ In the following example, the model predicts that, given the same context *"I lo
 
 Furthermore, the **rankers can be integrated with generators**. For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "We can't." has a high generation probability, but less interesting. So the rankers will put in in lower position after reranking.
 
-<img src="doc/demo_rerank.PNG" width="700">
+<img src="doc/demo_rerank.png" width="700">
 
 |  | Machine generated response <br> of "Can we restart 2020?" | Generation Probability | RaNker Score |
 | :-------------: | :----------- | :-----------: | :--: |
