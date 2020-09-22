@@ -51,11 +51,6 @@ python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/updown.pth
 # 0.506 gen 0.210 ranker 0.506    No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe
 # 0.350 gen 0.314 ranker 0.350    No, we can't.
 # ...
-```
-|  | Machine generated response <br> of "Can we restart 2020?" | Generation Probability | Ranker Score |
-| :-------------: | :----------- | :-----------: | :--: |
-|  A |  No, we can't. | 0.314 | 0.350 |
-|  B |  No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe | 0.210 | 0.506 |
 
 
 ### Ranking dialog responses
