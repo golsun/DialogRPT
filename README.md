@@ -28,20 +28,29 @@ Links
 Please check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
 
 **Option1: rankers only.** 
-In the following example, the model predicts that, given the same context "I love NLP!", response B is gets more upvotes than response B.
-```
+In the following example, the model predicts that, given the same context *"I love NLP!"*, response *"Here’s a free textbook (URL) in case anyone needs it."* is gets more upvotes than response *"Me too!"*.
+```bash
 python src/score.py play -p=restore/updown.pth
+#
+# Context:  I love NLP!
+# Response: Here’s a free textbook (URL) in case anyone needs it.
+# score = 0.613
+
+# Context:  I love NLP!
+# Response: Me too!
+# score = 0.111
 ```
-|  | Assumed response of "I love NLP!"  | Ranker Score |
-| :-------------: | :----------- | :-----------: | 
-|  A |  Me too! | 0.111 |
-|  B |  Here’s a free textbook (URL) in case anyone needs it. | 0.613|
 
 
 **Option2: generator + ranker.** 
-For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "We can't." has a high generation probability, but less interesting. So the rankers will put in in lower position after reranking.
-```
-!python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/updown.pth
+For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "No, we can't." has a high generation probability (`gen 0.314`), but less interesting (`ranker 0.350`). So the rankers will put in position lower than ones more likely to be upvoted, e.g. "No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe."
+```bash
+python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/updown.pth
+#
+# Context:        Can we restart 2020?
+# 0.506 gen 0.210 ranker 0.506    No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe
+# 0.350 gen 0.314 ranker 0.350    No, we can't.
+# ...
 ```
 |  | Machine generated response <br> of "Can we restart 2020?" | Generation Probability | Ranker Score |
 | :-------------: | :----------- | :-----------: | :--: |
