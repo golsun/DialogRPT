@@ -811,7 +811,6 @@ if __name__ == "__main__":
     parser.add_argument('task', type=str)
     parser.add_argument('year', type=int)
     parser.add_argument('--year_to', type=int)
-    parser.add_argument('--n_ref', type=int, default=6)
     args = parser.parse_args()
     if args.task == 'bz2':
         build_json(args.year)
