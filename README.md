@@ -9,9 +9,24 @@
 How likely a dialog response is upvoted 👍 and/or gets replied 💬? 
 
 This is what **DialogRPT** is learned to predict.
-It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on millions of human feedback data. 
+It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on 100 + millions of human feedback data. 
 It can be used to improve existing dialog generation model (e.g., [DialoGPT](https://github.com/microsoft/DialoGPT)) by re-ranking the generated response candidates.
 See our [EMNLP paper](https://arxiv.org/abs/2009.06978/) for more details. 
+
+We considered the following tasks and provided corresponding pretrained models.
+
+| Description    | Task | Pretrained model |
+| :------------- | :-----------: | :-----------: |
+| **Human feedback**: <br> given a context and its two human responses, predict...|     |
+|  ... which gets more upvotes? | `updown` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) |
+| ... which gets more direct replies? | `width` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) |
+|  ... which gets longer follow-up thread? | `depth` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) |
+| **Human-like** (i.e., human vs fake): <br> given a context and one human response, distinguish it with... |    |
+| ... a random human response | `human_vs_rand` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
+| ... a machine generated response | `human_vs_machine` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
+
+
+
 
 Links
 * [Paper](https://arxiv.org/abs/2009.06978/)
@@ -19,15 +34,26 @@ Links
 * [Discussion on Reddit](https://www.reddit.com/r/MachineLearning/comments/iurfdf/r_this_model_predicts_which_reddit_comment_gets/)
 * [An inventory of MSR NLP team projects](https://github.com/microsoft/MSR-NLP-Projects)
 
-## Quick Start (TL;DR)
 
-### Interactive Demo
+## Quick Start
 
+
+### Install
+
+**Option 1**: run locally
+```
+git clone https://github.com/golsun/DialogRPT
+cd DialogRPT
+conda create -n dialogrpt python=3.6
+conda activate dialogrpt
+pip install -r requirements.txt
+```
+
+**Option 2**: run on [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
 <img src="doc/demo.PNG" width="700">
 
-Please check out this [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) for an interactive demo.
 
-**Option1: rankers only.** 
+### Play with rankers only
 In the following example, the model predicts that, given the same context *"I love NLP!"*, response *"Here’s a free textbook (URL) in case anyone needs it."* is gets more upvotes than response *"Me too!"*.
 ```bash
 python src/score.py play -p=restore/updown.pth
@@ -40,9 +66,13 @@ python src/score.py play -p=restore/updown.pth
 # Response: Me too!
 # score = 0.111
 ```
+You can also play the ensemble model, which involves multiple models defined in its [config file](restore/ensemble.yml) (see this file for details). 
+```bash
+python src/main.py play -p=restore/ensemble.yml
+```
 
-
-**Option2: generator + ranker.** 
+### Play generator + ranker
+Dialog generation models can be improved by integrating with the response ranking models.
 For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "No, we can't." has a high generation probability (`gen 0.314`), but less interesting (`ranker 0.350`). So the rankers will put in position lower than ones more likely to be upvoted, e.g. "No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe."
 ```bash
 python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/updown.pth
@@ -52,9 +82,13 @@ python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/updown.pth
 # 0.350 gen 0.314 ranker 0.350    No, we can't.
 # ...
 ```
+Similarly, you can use the [ensemble model](restore/ensemble.yml).
+```
+python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/ensemble.yml
+```
 
 
-### Ranking dialog responses
+### Evaluating dialog responses
 Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response0 \t response1 ...`. See example [input file](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv)
 * Using a single ranker (see [expected output](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.updown.jsonl))
 ```bash
@@ -72,39 +106,10 @@ python src/score.py rank --data=doc/toy.tsv -p=restore/updown.pth
 python src/score.py rank --data=doc/toy.tsv -p=restore/ensemble.yml
 ```
 
-## Install
-
-**Step 1.** Download the repo
-```
-git clone https://github.com/golsun/DialogRPT
-cd DialogRPT
-```
-**Step 2.** Install the packages
-```
-conda create -n dialogrpt python=3.6
-conda activate dialogrpt
-pip install -r requirements.txt
-```
-**Step 3.** Although the pretrained models will be downloaded when you need to load them, you can choose to download the them manually with
-```bash
-wget https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth -P restore
-# TODO: download other models using the links in the table below
-```
-
-| Description    | Task | Pretrained model |
-| :------------- | :-----------: | :-----------: |
-| **Human feedback**: <br> given a context and its two human responses, predict...|     |
-|  ... which gets more upvotes? | `updown` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) |
-| ... which gets more direct replies? | `width` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) |
-|  ... which gets longer follow-up thread? | `depth` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) |
-| **Human-like** (i.e., human vs fake): <br> given a context and one human response, distinguish it with... |    |
-| ... a random human response | `human_vs_rand` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
-| ... a machine generated response | `human_vs_machine` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
-
 
 ## Data
 
-Traning dataset can be built with [this script](https://github.com/golsun/DialogRPT/blob/master/data.sh), which download raw data from [a third party dump](https://files.pushshift.io/reddit) and extract comparable pairs of comments for classification tasks. The expected file structure is illustrated [here](https://github.com/golsun/DialogRPT/blob/master/doc/data_file_structure.md).
+Traning dataset can be built with [this script](https://github.com/golsun/DialogRPT/blob/master/data.sh), which downloads raw data from [a third party dump](https://files.pushshift.io/reddit) and extract comparable pairs of comments for classification tasks. The expected file structure is illustrated [here](https://github.com/golsun/DialogRPT/blob/master/doc/data_file_structure.md).
 ```bash
 sh data.sh
 ```
@@ -144,19 +149,6 @@ We trained all models on a Nvidia V100 4-core GPU (each core with 32G memory) wi
 | `max_seq_len` | 50 | max allowed sequence length. <br> if longer, leading tokens will be truncated |
 | `max_hr_gap` | 1 | max allowed hour difference between positive and negative samples. <br> If longer, this pair will be discarded for train/vali|
 
-## Play
-
-Please see the **Interactive Demo** above to run in Colab.
-
-To run locally, use the following command to test a single model (e.g. `restore/updown.pth`)
-```bash
-python src/main.py play -p=restore/updown.pth
-# or use path of another trained model for -p
-```
-You can also play the ensemble model, which involves multiple models defined in its [config file](restore/ensemble.yml) (see this file for details). 
-```bash
-python src/main.py play -p=restore/ensemble.yml
-```
 
 ## Evaluation
 
