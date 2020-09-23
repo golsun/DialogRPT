@@ -15,6 +15,14 @@ See our [EMNLP paper](https://arxiv.org/abs/2009.06978/) for more details.
 
 We considered the following tasks and provided corresponding pretrained models.
 
+
+Quick links:
+* [Paper](https://arxiv.org/abs/2009.06978/)
+* [Demo](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
+* [Dataset](https://dialogfeedback.github.io/data.html)
+* [Related MSR NLP team projects](https://github.com/microsoft/MSR-NLP-Projects)
+
+
 |Task | Description  | Pretrained model |
 | :------------- | :----------- | :-----------: |
 |  **Human feedback**  |  given a context and its two human responses, predict...|
@@ -26,13 +34,6 @@ We considered the following tasks and provided corresponding pretrained models.
 | `human_vs_machine`| ... a machine generated response  | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
 
 
-
-
-Links
-* [Paper](https://arxiv.org/abs/2009.06978/)
-* [Demo](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
-* [Discussion on Reddit](https://www.reddit.com/r/MachineLearning/comments/iurfdf/r_this_model_predicts_which_reddit_comment_gets/)
-* [An inventory of MSR NLP team projects](https://github.com/microsoft/MSR-NLP-Projects)
 
 
 ## Quick Start
@@ -109,7 +110,7 @@ python src/score.py rank --data=doc/toy.tsv -p=restore/ensemble.yml
 
 ## Data
 
-Traning dataset can be built with [this script](https://github.com/golsun/DialogRPT/blob/master/data.sh), which downloads raw data from [a third party dump](https://files.pushshift.io/reddit) and extract comparable pairs of comments for classification tasks. The expected file structure is illustrated [here](https://github.com/golsun/DialogRPT/blob/master/doc/data_file_structure.md).
+Traning dataset can be built with [this script](https://github.com/golsun/DialogRPT/blob/master/data.sh), which downloads raw data from [a third party dump](https://files.pushshift.io/reddit) and extract comparable pairs of comments for classification tasks.
 ```bash
 sh data.sh
 ```
@@ -118,7 +119,7 @@ Testing data can be downloaded [here](https://xiagnlp2.blob.core.windows.net/dia
 wget https://xiagnlp2.blob.core.windows.net/dialogrpt/test.zip
 unzip test.zip
 ```
-see **Evaluation** section below to reproduce our results.
+Please checkout our [Dataset webpage](https://dialogfeedback.github.io/data.html) for data examples, description, statistics and more.
 
 ## Training
 We use [DialoGPT](https://github.com/microsoft/DialoGPT) to initialize the model. Please download with
