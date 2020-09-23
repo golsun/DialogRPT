@@ -6,7 +6,7 @@
 
 # **Dialog** **R**anking **P**retrained **T**ransformers
 
-How likely a dialog response is upvoted 👍 and/or gets replied 💬? 
+> How likely a dialog response is upvoted 👍 and/or gets replied 💬? 
 
 This is what **DialogRPT** is learned to predict.
 It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on 100 + millions of human feedback data. 
@@ -15,15 +15,15 @@ See our [EMNLP paper](https://arxiv.org/abs/2009.06978/) for more details.
 
 We considered the following tasks and provided corresponding pretrained models.
 
-| Description    | Task | Pretrained model |
-| :------------- | :-----------: | :-----------: |
-| **Human feedback**: <br> given a context and its two human responses, predict...|     |
-|  ... which gets more upvotes? | `updown` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) |
-| ... which gets more direct replies? | `width` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) |
-|  ... which gets longer follow-up thread? | `depth` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) |
-| **Human-like** (i.e., human vs fake): <br> given a context and one human response, distinguish it with... |    |
-| ... a random human response | `human_vs_rand` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
-| ... a machine generated response | `human_vs_machine` | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
+|Task | Description  | Pretrained model |
+| :------------- | :----------- | :-----------: |
+|  **Human feedback**  |  given a context and its two human responses, predict...|
+| `updown` |  ... which gets more upvotes? | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) |
+| `width`| ... which gets more direct replies?  | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) |
+| `depth`|  ... which gets longer follow-up thread?  | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) |
+|  **Human-like** (human vs fake) | given a context and one human response, distinguish it with... |
+| `human_vs_rand`| ... a random human response  | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
+| `human_vs_machine`| ... a machine generated response  | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
 
 
 
