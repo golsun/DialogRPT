@@ -16,6 +16,7 @@ Quick links:
 * [Paper](https://arxiv.org/abs/2009.06978/)
 * [Demo](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
 * [Dataset](https://dialogfeedback.github.io/data.html)
+* [Slides](https://github.com/golsun/DialogRPT/blob/master/doc/DialogRPT-1page.pdf)
 * [Related MSR NLP team projects](https://github.com/microsoft/MSR-NLP-Projects)
 
 We considered the following tasks and provided corresponding pretrained models.
