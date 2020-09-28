@@ -51,7 +51,7 @@ pip install -r requirements.txt
 <img src="doc/demo.PNG" width="700">
 
 
-### Use with rankers only
+### Use rankers only
 In the following example, the model predicts that, given the same context *"I love NLP!"*, response *"Here’s a free textbook (URL) in case anyone needs it."* is gets more upvotes than response *"Me too!"*.
 ```bash
 python src/score.py play -p=restore/updown.pth
