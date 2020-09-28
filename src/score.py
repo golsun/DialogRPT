@@ -242,8 +242,11 @@ if __name__ == "__main__":
         eval_feedback(args.data, model, max_cxt_turn=args.max_cxt_turn, 
             min_rank_gap=args.min_rank_gap, max_n=args.max_n, min_score_gap=args.min_score_gap)
 
-    elif args.task == 'rank':
+    elif args.task == 'test':
         rank_hyps(args.data, model, max_n=args.max_n, max_cxt_turn=args.max_cxt_turn)
 
     elif args.task == 'play':
         play(model, max_cxt_turn=args.max_cxt_turn)
+
+    else:
+        raise ValueError

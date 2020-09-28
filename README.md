@@ -51,7 +51,7 @@ pip install -r requirements.txt
 <img src="doc/demo.PNG" width="700">
 
 
-### Play with rankers only
+### Use with rankers only
 In the following example, the model predicts that, given the same context *"I love NLP!"*, response *"Here’s a free textbook (URL) in case anyone needs it."* is gets more upvotes than response *"Me too!"*.
 ```bash
 python src/score.py play -p=restore/updown.pth
@@ -68,8 +68,25 @@ You can also play the ensemble model, which involves multiple models defined in 
 ```bash
 python src/main.py play -p=restore/ensemble.yml
 ```
+To score a list of (context, response) pairs, please provide a input file (`--data`), which is tab-separated in format `context \t response0 \t response1 ...`. See example [input file](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv)
+* Using a single ranker (see [expected output](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.updown.jsonl))
+```bash
+python src/score.py test --data=doc/toy.tsv -p=restore/updown.pth
+# downloading pretrained model to restore/updown.pth
+# 100% [....................] 1520029114 / 1520029114
+# loading from restore/updown.pth
+# ranking doc/toy.tsv
+# totally processed 2 line, avg_hyp_score 0.264, top_hyp_score 0.409
+# results saved to doc/toy.tsv.ranked.jsonl
+# results can be read with function `read_ranked_jsonl`
+```
+* Using an ensemble model (see [expected output](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.ensemble.jsonl))
+```bash
+python src/score.py test --data=doc/toy.tsv -p=restore/ensemble.yml
+```
 
-### Play generator + ranker
+
+### Use generator + ranker
 Dialog generation models can be improved by integrating with the response ranking models.
 For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "No, we can't." has a high generation probability (`gen 0.314`), but less interesting (`ranker 0.350`). So the rankers will put in position lower than ones more likely to be upvoted, e.g. "No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe."
 ```bash
@@ -87,24 +104,6 @@ python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/ensemble.yml
 To generate from a list of contexts, stored in a line-separated file, use:
 ```
 python src/generation.py test --path_test=path/to/list/of/contexts [other args..]
-```
-
-### Evaluating dialog responses
-Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response0 \t response1 ...`. See example [input file](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv)
-* Using a single ranker (see [expected output](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.updown.jsonl))
-```bash
-python src/score.py rank --data=doc/toy.tsv -p=restore/updown.pth
-# downloading pretrained model to restore/updown.pth
-# 100% [....................] 1520029114 / 1520029114
-# loading from restore/updown.pth
-# ranking doc/toy.tsv
-# totally processed 2 line, avg_hyp_score 0.264, top_hyp_score 0.409
-# results saved to doc/toy.tsv.ranked.jsonl
-# results can be read with function `read_ranked_jsonl`
-```
-* Using an ensemble model (see [expected output](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.ensemble.jsonl))
-```bash
-python src/score.py rank --data=doc/toy.tsv -p=restore/ensemble.yml
 ```
 
 
