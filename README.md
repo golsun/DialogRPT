@@ -47,7 +47,7 @@ conda activate dialogrpt
 pip install -r requirements.txt
 ```
 
-**Option 2**: run on [Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
+**Option 2**: run on [this Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
 <img src="doc/demo.PNG" width="700">
 
 
@@ -101,9 +101,9 @@ Similarly, you can use the [ensemble model](restore/ensemble.yml).
 ```
 python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/ensemble.yml
 ```
-To generate from a list of contexts, stored in a line-separated file, use:
+To generate from a list of contexts stored in a line-separated file, provide it with `--path_test` and use the command below:
 ```
-python src/generation.py test --path_test=path/to/list/of/contexts [other args..]
+python src/generation.py test --path_test=path/to/list/of/contexts -pg=restore/medium_ft.pkl -pr=restore/ensemble.yml
 ```
 
 
