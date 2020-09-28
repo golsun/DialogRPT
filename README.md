@@ -73,7 +73,7 @@ python src/main.py play -p=restore/ensemble.yml
 Dialog generation models can be improved by integrating with the response ranking models.
 For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "No, we can't." has a high generation probability (`gen 0.314`), but less interesting (`ranker 0.350`). So the rankers will put in position lower than ones more likely to be upvoted, e.g. "No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe."
 ```bash
-python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/updown.pth
+python src/generation.py play -pg=restore/medium_ft.pkl -pr=restore/updown.pth
 #
 # Context:        Can we restart 2020?
 # 0.506 gen 0.210 ranker 0.506    No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe
@@ -84,7 +84,10 @@ Similarly, you can use the [ensemble model](restore/ensemble.yml).
 ```
 python src/generation.py -pg=restore/medium_ft.pkl -pr=restore/ensemble.yml
 ```
-
+To generate from a list of contexts, stored in a line-separated file, use:
+```
+python src/generation.py test --path_test=path/to/list/of/contexts [other args..]
+```
 
 ### Evaluating dialog responses
 Use our models as a evaluation/ranking metric for dialog response generation. The input file (`--data`) is tab-separated, in format `context \t response0 \t response1 ...`. See example [input file](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv)

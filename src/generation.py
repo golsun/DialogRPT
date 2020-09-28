@@ -74,6 +74,7 @@ class GPT2Generator:
 
         return finished
 
+
     def play(self, topk=3, topp=0.8, beam=10):
         while True:
             cxt = input('\nContext:\t')
@@ -117,11 +118,28 @@ class Integrated:
                 print('%.3f gen %.3f ranker %.3f\t%s'%(final, prob_gen, score_ranker, hyp))
 
 
+def test(model, path_in, params):
+    lines = []
+    for i, line in enumerate(open(path_in, encoding='utf-8')):
+        print('processing %i-th context'%i)
+        cxt = line.split('\t')[0]
+        ret = model.predict(cxt, **params)
+        cc = [cxt] + [tup[-1] for tup in ret]
+        lines.append('\t'.join(cc))
+    path_out = path_in + '.hyps'
+    with open(path_out, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(lines))
+    print(path_out)
+
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
+    parser.add_argument('task', type=str)
     parser.add_argument('--path_generator', '-pg', type=str)
     parser.add_argument('--path_ranker', '-pr', type=str)
+    parser.add_argument('--path_test', type=str)
     parser.add_argument('--cpu', action='store_true')
     parser.add_argument('--topk', type=int, default=3)
     parser.add_argument('--beam', type=int, default=3)
@@ -131,10 +149,16 @@ if __name__ == "__main__":
 
     cuda = False if args.cpu else torch.cuda.is_available()
     generator = GPT2Generator(args.path_generator, cuda)
+    params = {'topk': args.topk, 'beam': args.beam, 'topp': args.topp}
     if args.path_ranker is None:
-        generator.play(topk=args.topk, beam=args.beam, topp=args.topp)
+        model = generator
     else:
         from score import get_model
         ranker = get_model(args.path_ranker, cuda)
-        integrated = Integrated(generator, ranker)
-        integrated.play(topk=args.topk, beam=args.beam, topp=args.topp, wt_ranker=args.wt_ranker)
+        model = Integrated(generator, ranker)
+        params['wt_ranker'] = args.wt_ranker
+
+    if args.task == 'play':
+        model.play(**params)
+    elif args.task == 'test':
+        test(model, args.path_test, params)
