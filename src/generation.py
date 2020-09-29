@@ -58,7 +58,6 @@ class GPT2Generator:
                             sum_logP[i] + next_logP[i, j].item(), 
                             i, j))
                 
-
             if not sumlogP_ij:
                 break
             sumlogP_ij = sorted(sumlogP_ij, reverse=True)[:min(len(sumlogP_ij), beam)]
@@ -118,7 +117,7 @@ class Integrated:
                 print('%.3f gen %.3f ranker %.3f\t%s'%(final, prob_gen, score_ranker, hyp))
 
 
-def test(model, path_in, params):
+def test(model, path_in, params, max_n):
     lines = []
     for i, line in enumerate(open(path_in, encoding='utf-8')):
         print('processing %i-th context'%i)
@@ -126,10 +125,12 @@ def test(model, path_in, params):
         ret = model.predict(cxt, **params)
         cc = [cxt] + [tup[-1] for tup in ret]
         lines.append('\t'.join(cc))
+        if i == max_n:
+            break
     path_out = path_in + '.hyps'
     with open(path_out, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
-    print(path_out)
+    print('saved to '+path_out)
 
 
 
@@ -145,6 +146,7 @@ if __name__ == "__main__":
     parser.add_argument('--beam', type=int, default=3)
     parser.add_argument('--wt_ranker', type=float, default=1.)
     parser.add_argument('--topp', type=float, default=0.8)
+    parser.add_argument('--max_n', type=int, default=-1)
     args = parser.parse_args()
 
     cuda = False if args.cpu else torch.cuda.is_available()
@@ -161,4 +163,4 @@ if __name__ == "__main__":
     if args.task == 'play':
         model.play(**params)
     elif args.task == 'test':
-        test(model, args.path_test, params)
+        test(model, args.path_test, params, args.max_n)
