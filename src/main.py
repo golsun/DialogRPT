@@ -68,8 +68,6 @@ if __name__ == "__main__":
     opt = Option(args)
     master = Master(opt)
     if args.task == 'train':
-        assert(args.min_score_gap is not None)
-        assert(args.min_rank_gap is not None)
         master.train()
     elif args.task == 'vali':
         master.vali()
