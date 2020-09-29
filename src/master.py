@@ -148,9 +148,6 @@ class Master:
 
 
     def vali(self, info=''):
-        assert(self.opt.min_rank_gap is not None)
-        assert(self.opt.min_score_gap is not None)
-
         n_print = min(self.opt.batch, self.opt.vali_print)
         self.model.eval()
         loss = 0
