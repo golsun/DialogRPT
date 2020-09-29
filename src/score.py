@@ -2,6 +2,7 @@ import torch, pdb, os, json
 from shared import _cat_
 import numpy as np
 from model import OptionInfer, Scorer
+from collections import defaultdict
 
 
 def get_model(path, cuda=True):
@@ -189,12 +190,39 @@ def rank_hyps(path, model, max_n=-1, max_cxt_turn=None):
     with open(path_out, 'w') as f:
         f.write('\n'.join(lines))
     print('results saved to '+path_out)
-    print('results can be read with function `read_ranked_jsonl`')
 
 
 def read_ranked_jsonl(path):
     """ read the jsonl file ouput by function rank_hyps"""
-    return [json.loads(line) for line in open(path, encoding="utf-8")]
+    data = [json.loads(line) for line in open(path, encoding="utf-8")]
+    n_hyp = [len(d['hyps']) for d in data]
+    best = defaultdict(list)
+    avg = defaultdict(list)
+    for d in data:
+        scores = defaultdict(list)
+        for tup in d['hyps']:
+            scores['_score'].append(tup[0])
+            if isinstance(tup[1], dict):
+                for k in tup[1]:
+                    scores[k].append(tup[1][k])
+        for k in scores:
+            best[k].append(max(scores[k]))
+            avg[k].append(np.mean(scores[k]))
+    
+    print()
+    width = 20
+    print('\t|'.join([' '*width, 'best', 'avg']))
+    print('-'*40)
+    for k in best:
+        print('%s\t|%.3f\t|%.3f'%(
+            ' '*(width - len(k)) + k,
+            np.mean(best[k]), 
+            np.mean(avg[k]),
+            ))
+    print('-'*40)
+    print('n_cxt: %i'%len(data))
+    print('avg n_hyp per cxt: %.2f'%np.mean(n_hyp))
+    return data
 
 
 
@@ -233,7 +261,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     cuda = False if args.cpu else torch.cuda.is_available()
-    model = get_model(args.path_pth, cuda)
+    if args.task != 'stats':
+        model = get_model(args.path_pth, cuda)
+        
     if args.task in ['eval_human_vs_rand', 'eval_human_vs_machine']:
         fake = args.task.split('_')[-1]
         eval_fake(args.data, model, fake, max_n=args.max_n, max_cxt_turn=args.max_cxt_turn)
@@ -247,6 +277,9 @@ if __name__ == "__main__":
 
     elif args.task == 'play':
         play(model, max_cxt_turn=args.max_cxt_turn)
+
+    elif args.task == 'stats':
+        read_ranked_jsonl(args.data)
 
     else:
         raise ValueError

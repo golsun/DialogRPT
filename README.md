@@ -4,7 +4,7 @@
     <br>
 <p>
 
-# **Dialog** **R**anking **P**retrained **T**ransformers
+# Dialog Ranking Pretrained Transformers
 
 > How likely a dialog response is upvoted 👍 and/or gets replied 💬? 
 
@@ -29,7 +29,6 @@ We considered the following tasks and provided corresponding pretrained models.
 |  **Human-like** (human vs fake) | given a context and one human response, distinguish it with... |
 | `human_vs_rand`| ... a random human response  | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
 | `human_vs_machine`| ... a machine generated response  | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
-
 
 
 
@@ -78,11 +77,26 @@ python src/score.py test --data=doc/toy.tsv -p=restore/updown.pth
 # ranking doc/toy.tsv
 # totally processed 2 line, avg_hyp_score 0.264, top_hyp_score 0.409
 # results saved to doc/toy.tsv.ranked.jsonl
-# results can be read with function `read_ranked_jsonl`
 ```
 * Using an ensemble model (see [expected output](https://github.com/golsun/DialogRPT/blob/master/doc/toy.tsv.ensemble.jsonl))
 ```bash
 python src/score.py test --data=doc/toy.tsv -p=restore/ensemble.yml
+```
+Statistics of the scoring results can be shown with the following command, e.g. for `doc/toy.tsv.ensemble.jsonl`
+```bash
+python src/score.py stats --data=doc/toy.tsv.ensemble.jsonl
+#                         |best   |avg
+# ----------------------------------------
+#               _score    |0.339  |0.206
+#        human_vs_rand    |0.928  |0.861
+#     human_vs_machine    |0.575  |0.525
+#               updown    |0.409  |0.264
+#                depth    |0.304  |0.153
+#                width    |0.225  |0.114
+#                final    |0.339  |0.206
+# ----------------------------------------
+# n_cxt: 2
+# avg n_hyp per cxt: 2.50
 ```
 
 
