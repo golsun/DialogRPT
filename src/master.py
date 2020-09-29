@@ -54,6 +54,7 @@ class Master:
             # after DataParallel, attr of self.model become attr of self.model.module
             self._model = self.model.module
             self.model.core = self.model.module.core
+            self.model.tokenizer = self._model.tokenizer
         else:
             self.model = self._model
         if self.opt.task == 'train':
