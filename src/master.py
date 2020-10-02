@@ -145,6 +145,7 @@ class Master:
 
 
     def loss(self, pred):
+        # pred is the probability to pick the positive response, given a context and a negative response
         return - torch.log(pred).mean() 
 
 
