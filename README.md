@@ -12,6 +12,7 @@ This is what **DialogRPT** is learned to predict.
 It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on 100 + millions of human feedback data. 
 It can be used to improve existing dialog generation model (e.g., [DialoGPT](https://github.com/microsoft/DialoGPT)) by re-ranking the generated response candidates.
 
+* [Paper](https://arxiv.org/abs/2009.06978/) | [Demo](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) | [Dataset](https://dialogfeedback.github.io/data.html) | [Slides](https://github.com/golsun/DialogRPT/blob/master/doc/DialogRPT-1page.pdf) | [Related MSR NLP team projects](https://github.com/microsoft/MSR-NLP-Projects)
 
 We considered the following tasks and provided corresponding pretrained models.
 |Task | Description  | Pretrained model |
@@ -24,9 +25,10 @@ We considered the following tasks and provided corresponding pretrained models.
 | `human_vs_rand`| ... a random human response  | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) |
 | `human_vs_machine`| ... a machine generated response  | [download](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) |
 
-Contents:
+## Contents:
+
 * [Quick Start](#Quick-Start)
-  * [Install](#Install): locally or on [this Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
+  * [Install](#Install) or try [this demo](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
   * [Use rankers only](#Use-rankers-only): use DialogRPT as evalution metric
   * [Use generator + ranker](#Use-generator-+-ranker): improve generator by reranking hypotheses with DialogRPT
 * [Data](#Data)
@@ -36,12 +38,7 @@ Contents:
   * [Human-like classification](#Human-like-classification)
 * [Citation](#Citation)
 
-Quick links:
-* [Paper](https://arxiv.org/abs/2009.06978/)
-* [Demo](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
-* [Dataset](https://dialogfeedback.github.io/data.html)
-* [Slides](https://github.com/golsun/DialogRPT/blob/master/doc/DialogRPT-1page.pdf)
-* [Related MSR NLP team projects](https://github.com/microsoft/MSR-NLP-Projects)
+
 
 
 ## Quick Start
