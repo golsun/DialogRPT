@@ -57,7 +57,7 @@ conda activate dialogrpt
 pip install -r requirements.txt
 ```
 
-**Option 2**: run on [this Colab Notebook](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing)
+**Option 2**: run on Colab Notebook. You can either use [Demo (original)](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) or [Demo (HuggingFace)](https://colab.research.google.com/drive/1cAtfkbhqsRsT59y3imjR1APw3MHDMkuV?usp=sharing)
 <img src="doc/demo.PNG" width="700">
 
 
