@@ -9,10 +9,10 @@
 > How likely a dialog response is upvoted 👍 and/or gets replied 💬? 
 
 This is what **DialogRPT** is learned to predict.
-It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on 100 + millions of human feedback data. 
+It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on 100 + millions of human feedback data, accepted to appear at [EMNLP'20](https://2020.emnlp.org/). 
 It can be used to improve existing dialog generation model (e.g., [DialoGPT](https://github.com/microsoft/DialoGPT)) by re-ranking the generated response candidates.
 
-* [EMNLP'20 Paper](https://arxiv.org/abs/2009.06978/) | [Dataset](https://dialogfeedback.github.io/data.html) | [Slides](https://github.com/golsun/DialogRPT/blob/master/doc/DialogRPT-1page.pdf) | [Demo (original)](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) | [Demo (HuggingFace)](https://colab.research.google.com/drive/1cAtfkbhqsRsT59y3imjR1APw3MHDMkuV?usp=sharing)
+Quick links: [Paper](https://arxiv.org/abs/2009.06978/) | [Dataset](https://dialogfeedback.github.io/data.html) | [Slides](https://github.com/golsun/DialogRPT/blob/master/doc/DialogRPT-1page.pdf) | [Demo (original)](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) | [Demo (HuggingFace)](https://colab.research.google.com/drive/1cAtfkbhqsRsT59y3imjR1APw3MHDMkuV?usp=sharing)
 
 We considered the following tasks and provided corresponding pretrained models.
 (Click 💾 to download pytorch checkpoint, or click 🤗 to use HuggingFace model card)
