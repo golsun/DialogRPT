@@ -6,3 +6,5 @@ data/
 .vscode/
 test/
 doc/arxiv/
+model_card/
+

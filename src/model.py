@@ -3,7 +3,7 @@
 
 import torch, os, pdb
 import numpy as np
-from transformers import GPT2Tokenizer, GPT2Model, GPT2Config
+from transformers19 import GPT2Tokenizer, GPT2Model, GPT2Config
 from shared import EOS_token
 
 
