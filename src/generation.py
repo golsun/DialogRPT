@@ -2,12 +2,12 @@
 
 import torch, pdb
 import numpy as np
-from shared import download_model
+from shared import download_model, EOS_token
 
 class GPT2Generator:
 
     def __init__(self, path, cuda):
-        from transformers import GPT2Tokenizer, GPT2LMHeadModel, GPT2Config
+        from transformers19 import GPT2Tokenizer, GPT2LMHeadModel, GPT2Config
         self.tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
         model_config = GPT2Config(n_embd=1024, n_layer=24, n_head=16)        
         self.model = GPT2LMHeadModel(model_config)
@@ -22,14 +22,24 @@ class GPT2Generator:
         self.cuda = cuda
         if self.cuda:
             self.model.cuda()
+
+
+    def tokenize(self, cxt):
+        turns = cxt.split(EOS_token)
+        ids = []
+        for turn in turns:
+            ids += self.tokenizer.encode(turn.strip()) + [self.ix_EOS]
+        ids = torch.tensor([ids]).view(1, -1)
+        if self.cuda:
+            ids = ids.cuda()
+        return ids
     
 
-    def predict(self, cxt, topk=3, topp=0.8, beam=10, max_t=30):
-        conditioned_tokens = self.tokenizer.encode(cxt) + [self.ix_EOS]
-        len_cxt = len(conditioned_tokens)
-        tokens = torch.tensor([conditioned_tokens]).view(1, -1)
-        if self.cuda:
-            tokens = tokens.cuda()
+    def predict_beam(self, cxt, topk=3, topp=0.8, beam=10, max_t=30):
+        """ pick top tokens at each time step """
+
+        tokens = self.tokenize(cxt)
+        len_cxt = tokens.shape[1]
         sum_logP = [0]
         finished = []
 
@@ -74,12 +84,56 @@ class GPT2Generator:
         return finished
 
 
-    def play(self, topk=3, topp=0.8, beam=10):
+    def predict_sampling(self, cxt, temperature=1, n_hyp=5, max_t=30):
+        """ sampling tokens based on predicted probability """
+
+        tokens = self.tokenize(cxt)
+        tokens = tokens.repeat(n_hyp, 1)
+        len_cxt = tokens.shape[1]
+        sum_logP = [0] * n_hyp
+        live = [True] * n_hyp
+        seqs = [[] for _ in range(n_hyp)]
+        np.random.seed(2020)
+        for _ in range(max_t):
+            outputs = self.model(tokens)
+            predictions = outputs[0]
+            prob = torch.softmax(predictions[:, -1, :] / temperature, dim=-1)
+            if self.cuda:
+                prob = prob.cpu()
+            prob = prob.detach().numpy()
+            vocab = prob.shape[-1]
+            next_tokens = []
+            for i in range(n_hyp):
+                next_token = np.random.choice(vocab, p=prob[i,:])
+                next_tokens.append(next_token)
+                if not live[i]:
+                    continue
+                sum_logP[i] += np.log(prob[i, next_token])
+                seqs[i].append(next_token)
+                if next_token == self.ix_EOS:
+                    live[i] = False
+                    continue
+            next_tokens = torch.LongTensor(next_tokens).view(-1, 1)
+            if self.cuda:
+                next_tokens = next_tokens.cuda()
+            tokens = torch.cat([tokens, next_tokens], dim=-1)
+
+        ret = []
+        for i in range(n_hyp):
+            if live[i]:     # only return hyp that ends with EOS
+                continue
+            prob = np.exp(sum_logP[i] / (len(seqs[i]) + 1))
+            hyp = self.tokenizer.decode(seqs[i][:-1])   # strip EOS
+            ret.append((prob, hyp))
+        return ret
+        
+
+    def play(self, params):
         while True:
             cxt = input('\nContext:\t')
             if not cxt:
                 break
-            ret = self.predict(cxt, topk=topk, topp=topp, beam=beam)
+            ret = self.predict(cxt, **params)
             for prob, hyp in sorted(ret, reverse=True):
                 print('%.3f\t%s'%(prob, hyp))
 
@@ -121,7 +175,7 @@ def test(model, path_in, params, max_n):
     lines = []
     for i, line in enumerate(open(path_in, encoding='utf-8')):
         print('processing %i-th context'%i)
-        cxt = line.split('\t')[0]
+        cxt = line.strip('\n').split('\t')[0]
         ret = model.predict(cxt, **params)
         cc = [cxt] + [tup[-1] for tup in ret]
         lines.append('\t'.join(cc))
@@ -142,16 +196,25 @@ if __name__ == "__main__":
     parser.add_argument('--path_ranker', '-pr', type=str)
     parser.add_argument('--path_test', type=str)
     parser.add_argument('--cpu', action='store_true')
+    parser.add_argument('--sampling', action='store_true')
     parser.add_argument('--topk', type=int, default=3)
     parser.add_argument('--beam', type=int, default=3)
     parser.add_argument('--wt_ranker', type=float, default=1.)
     parser.add_argument('--topp', type=float, default=0.8)
     parser.add_argument('--max_n', type=int, default=-1)
+    parser.add_argument('--temperature', type=int, default=1)
+    parser.add_argument('--n_hyp', type=int, default=5)
     args = parser.parse_args()
 
     cuda = False if args.cpu else torch.cuda.is_available()
     generator = GPT2Generator(args.path_generator, cuda)
-    params = {'topk': args.topk, 'beam': args.beam, 'topp': args.topp}
+    if args.sampling:
+        params = {'temperature': args.temperature, 'n_hyp': args.n_hyp}
+        generator.predict = generator.predict_sampling
+    else:
+        params = {'topk': args.topk, 'beam': args.beam, 'topp': args.topp}
+        generator.predict = generator.predict_beam
+
     if args.path_ranker is None:
         model = generator
     else:
@@ -161,6 +224,6 @@ if __name__ == "__main__":
         params['wt_ranker'] = args.wt_ranker
 
     if args.task == 'play':
-        model.play(**params)
+        model.play(params)
     elif args.task == 'test':
         test(model, args.path_test, params, args.max_n)
