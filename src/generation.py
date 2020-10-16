@@ -12,6 +12,7 @@ class GPT2Generator:
         model_config = GPT2Config(n_embd=1024, n_layer=24, n_head=16)        
         self.model = GPT2LMHeadModel(model_config)
         download_model(path)
+        print('loading from '+path)
         weights = torch.load(path)
         if "lm_head.decoder.weight" in weights:
             weights["lm_head.weight"] = weights["lm_head.decoder.weight"]
@@ -143,12 +144,12 @@ class Integrated:
         self.generator = generator
         self.ranker = ranker
     
-    def predict(self, cxt, topk=3, topp=0.8, beam=10, wt_ranker=0.5, max_cxt_turn=2):
-        prob_hyp = self.generator.predict(cxt, topk=topk, topp=topp, beam=beam)
+    def predict(self, cxt, wt_ranker, params):
+        prob_hyp = self.generator.predict(cxt, **params)
         probs = np.array([prob for prob, _ in prob_hyp])
         hyps = [hyp for _, hyp in prob_hyp]
         if wt_ranker > 0:
-            scores_ranker = self.ranker.predict(cxt, hyps, max_cxt_turn=max_cxt_turn)
+            scores_ranker = self.ranker.predict(cxt, hyps)
             if isinstance(scores_ranker, dict):
                 scores_ranker = scores_ranker['final']
             scores = wt_ranker * scores_ranker + (1 - wt_ranker) * probs
@@ -161,22 +162,22 @@ class Integrated:
         return ret
 
 
-    def play(self, topk=3, topp=0.8, beam=10, wt_ranker=0.5):
+    def play(self, wt_ranker, params):
         while True:
             cxt = input('\nContext:\t')
             if not cxt:
                 break
-            ret = self.predict(cxt, topk=topk, topp=topp, beam=beam, wt_ranker=wt_ranker)
+            ret = self.predict(cxt, wt_ranker, params)
             for final, prob_gen, score_ranker, hyp in ret:
                 print('%.3f gen %.3f ranker %.3f\t%s'%(final, prob_gen, score_ranker, hyp))
 
 
-def test(model, path_in, params, max_n):
+def test(model, path_in, wt_ranker, params, max_n):
     lines = []
     for i, line in enumerate(open(path_in, encoding='utf-8')):
         print('processing %i-th context'%i)
         cxt = line.strip('\n').split('\t')[0]
-        ret = model.predict(cxt, **params)
+        ret = model.predict(cxt, wt_ranker, **params)
         cc = [cxt] + [tup[-1] for tup in ret]
         lines.append('\t'.join(cc))
         if i == max_n:
@@ -202,8 +203,8 @@ if __name__ == "__main__":
     parser.add_argument('--wt_ranker', type=float, default=1.)
     parser.add_argument('--topp', type=float, default=0.8)
     parser.add_argument('--max_n', type=int, default=-1)
-    parser.add_argument('--temperature', type=int, default=1)
-    parser.add_argument('--n_hyp', type=int, default=5)
+    parser.add_argument('--temperature', type=float, default=0.5)
+    parser.add_argument('--n_hyp', type=int, default=10)
     args = parser.parse_args()
 
     cuda = False if args.cpu else torch.cuda.is_available()
@@ -221,9 +222,8 @@ if __name__ == "__main__":
         from score import get_model
         ranker = get_model(args.path_ranker, cuda)
         model = Integrated(generator, ranker)
-        params['wt_ranker'] = args.wt_ranker
 
     if args.task == 'play':
-        model.play(params)
+        model.play(args.wt_ranker, params)
     elif args.task == 'test':
         test(model, args.path_test, params, args.max_n)

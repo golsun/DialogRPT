@@ -113,13 +113,21 @@ python src/score.py stats --data=doc/toy.tsv.ensemble.jsonl
 
 ### Use generator + ranker
 Dialog generation models can be improved by integrating with the response ranking models.
-For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "No, we can't." has a high generation probability (`gen 0.314`), but less interesting (`ranker 0.350`). So the rankers will put in position lower than ones more likely to be upvoted, e.g. "No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe."
+For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "Yes, we can." has a high generation probability (`gen 0.496`), but less interesting (`ranker 0.302`). So the rankers will put in position lower than ones more likely to be upvoted, e.g. "I think we should go back to the beginning, and start from the beginning." which is relatively less likely to be generated (`gen 0.383`) but seems more interesting (`ranker 0.431`)
 ```bash
-python src/generation.py play -pg=restore/medium_ft.pkl -pr=restore/updown.pth
+python src/generation.py play -pg=restore/medium_ft.pkl -pr=restore/updown.pth --sampling
 #
 # Context:        Can we restart 2020?
-# 0.506 gen 0.210 ranker 0.506    No, we can't. It's too late for that. We need to go back in time and start from the beginning of the universe
-# 0.350 gen 0.314 ranker 0.350    No, we can't.
+# 0.431 gen 0.383 ranker 0.431    I think we should go back to the beginning, and start from the beginning.
+# 0.429 gen 0.227 ranker 0.429    I think I'll just sit here and wait for 2020
+# 0.377 gen 0.249 ranker 0.377    Yeah, let's just start from the beginning
+# 0.323 gen 0.195 ranker 0.323    I think we should just give up and let the year just pass.
+# 0.304 gen 0.395 ranker 0.304    Yes. We can.
+# 0.302 gen 0.496 ranker 0.302    Yes, we can.
+# 0.283 gen 0.351 ranker 0.283    It's been a while since we've seen a good reboot.
+# 0.174 gen 0.306 ranker 0.174    I'm up for it
+# 0.168 gen 0.463 ranker 0.168    I'm down
+# 0.153 gen 0.328 ranker 0.153    I think so, yes.
 # ...
 ```
 Similarly, you can use the [ensemble model](restore/ensemble.yml).
