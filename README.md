@@ -113,7 +113,7 @@ python src/score.py stats --data=doc/toy.tsv.ensemble.jsonl
 
 ### Use generator + ranker
 Dialog generation models can be improved by integrating with the response ranking models.
-For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses. Some of them, e.g., "Yes, we can." has a high generation probability (`gen 0.496`), but less interesting (`ranker 0.302`). So the rankers will put in position lower than ones more likely to be upvoted, e.g. "I think we should go back to the beginning, and start from the beginning." which is relatively less likely to be generated (`gen 0.383`) but seems more interesting (`ranker 0.431`)
+For example, given the context *"Can we restart 2020?"*, DialoGPT may return the following responses by sampling decoding (or you can try beam search without `--sampling`). Some of them, e.g., *"Yes, we can."* has a high generation probability (`gen 0.496`), but less interesting (`ranker 0.302`). So the rankers will put in position lower than ones more likely to be upvoted, e.g. *"I think we should go back to the beginning, and start from the beginning."* which is relatively less likely to be generated (`gen 0.383`) but seems more interesting (`ranker 0.431`)
 ```bash
 python src/generation.py play -pg=restore/medium_ft.pkl -pr=restore/updown.pth --sampling
 #
