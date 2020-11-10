@@ -1,7 +1,7 @@
 # author: Xiang Gao at Microsoft Research AI NLP Group
 
 _cat_ = ' <-COL-> '
-#EOS_token = '_EOS_'        # old version, before Nov 8, 2020
+#EOS_token = '_EOS_'   # old version, before Nov 8 2020
 EOS_token = '<|endoftext|>'
 
 
