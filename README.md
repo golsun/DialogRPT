@@ -6,13 +6,17 @@
 
 # DialogRPT: Dialog Ranking Pretrained Transformers
 
-[DialogRPT](https://arxiv.org/abs/2009.06978/) is trained to predict human feedback (upvotes👍 or replies💬) of dialogue responses. 
+[DialogRPT](https://arxiv.org/abs/2009.06978/) predicts human feedback (upvotes👍 or replies💬) of dialogue responses. 
 
 It is a set of dialog response ranking models proposed by [Microsoft Research NLP Group](https://www.microsoft.com/en-us/research/group/natural-language-processing/) trained on 100 + millions of human feedback data, accepted to appear at [EMNLP'20](https://2020.emnlp.org/). 
 It can be used to improve existing dialog generation model (e.g., [DialoGPT](https://github.com/microsoft/DialoGPT)) by re-ranking the generated response candidates.
 This repo provides a PyTorch implementation and pretrained models.
 
-Quick links: [Paper](https://arxiv.org/abs/2009.06978/) | [Dataset](https://dialogfeedback.github.io/data.html) | [Slides](https://github.com/golsun/DialogRPT/blob/master/doc/DialogRPT-EMNLP.pdf) | [Demo (original)](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) | [Demo (HuggingFace)](https://colab.research.google.com/drive/1cAtfkbhqsRsT59y3imjR1APw3MHDMkuV?usp=sharing)
+Quick links: 
+* [Paper](https://arxiv.org/abs/2009.06978/)
+* [Intro Talk](https://slideslive.com/38938970/dialogue-response-ranking-training-with-largescale-human-feedback-data) and [Slides](https://github.com/golsun/DialogRPT/blob/master/doc/DialogRPT-EMNLP.pdf)
+* Demo: [original](https://colab.research.google.com/drive/1jQXzTYsgdZIQjJKrX4g3CP0_PGCeVU3C?usp=sharing) or [HuggingFace](https://colab.research.google.com/drive/1cAtfkbhqsRsT59y3imjR1APw3MHDMkuV?usp=sharing)
+* [Dataset](https://dialogfeedback.github.io/data.html)
 
 We considered the following tasks and provided corresponding pretrained models.
 (Click 💾 to download original pytorch checkpoint for this repo, or click 🤗 to use HuggingFace model card)
