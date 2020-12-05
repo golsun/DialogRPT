@@ -29,7 +29,7 @@ We considered the following tasks and provided corresponding pretrained models.
 | `width`| How likely the response gets the most direct replies?  | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-width?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
 | `depth`| How likely the response gets the longest follow-up thread?  | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-depth?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
 | **Human-like** (human vs fake) | | |
-| `human_vs_rand`| How relevant the response is?  | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-human-vs-rand?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
+| `human_vs_rand`| How relevant the response is for the given context?  | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-human-vs-rand?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
 | `human_vs_machine`| How likely the response is human-written rather than machine-generated?  | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-human-vs-machine?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
 
 
