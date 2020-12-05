@@ -21,15 +21,19 @@ Quick links:
 We considered the following tasks and provided corresponding pretrained models.
 (Click 💾 to download original pytorch checkpoint for this repo, or click 🤗 to use HuggingFace model card)
 
-|Task | Description  | Pretrained model  |
+
+| Human feedback | Given a context and its two human responses, predict...  | Pretrained model  |
 | :------------- | :----------- | :-----------: |
-|  **Human feedback**  |  given a context and its two human responses, predict...|
 | `updown` |  ... which gets more upvotes? | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-updown?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
 | `width`| ... which gets more direct replies?  | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/width.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-width?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
 | `depth`|  ... which gets longer follow-up thread?  | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/depth.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-depth?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
-|  **Human-like** (human vs fake) | given a context and one human response, distinguish it with... |
+
+
+| Human-like (human vs fake) | Given a context and one human response, distinguish it with...  | Pretrained model  |
+| :------------- | :----------- | :-----------: |
 | `human_vs_rand`| ... a random human response  | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_rand.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-human-vs-rand?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
 | `human_vs_machine`| ... a machine generated response  | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/human_vs_machine.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-human-vs-machine?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
+
 
 ## Contents:
 
