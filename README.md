@@ -22,7 +22,7 @@ We considered the following tasks and provided corresponding pretrained models.
 (Click 💾 to download original pytorch checkpoint for this repo, or click 🤗 to use HuggingFace model card)
 
 
-| Model | Description  | Pretrained model  |
+| Task | Description  | Pretrained model  |
 | :------------- | :----------- | :-----------: |
 | **Human feedback** | | |
 | `updown` |  How likely the response gets the most upvotes? | [💾](https://xiagnlp2.blob.core.windows.net/dialogrpt/updown.pth) / [🤗](https://huggingface.co/microsoft/DialogRPT-updown?text=I+love+NLP%21+<%7Cendoftext%7C>+Me+too%21) |
