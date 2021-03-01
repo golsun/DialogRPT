@@ -145,7 +145,8 @@ class Integrated:
         self.ranker = ranker
     
     def predict(self, cxt, wt_ranker, params):
-        prob_hyp = self.generator.predict(cxt, **params)
+        with torch.no_grad():
+            prob_hyp = self.generator.predict(cxt, **params)
         probs = np.array([prob for prob, _ in prob_hyp])
         hyps = [hyp for _, hyp in prob_hyp]
         if wt_ranker > 0:
