@@ -148,16 +148,7 @@ python src/generation.py test --path_test=path/to/list/of/contexts -pg=restore/m
 
 ## Data
 
-Traning dataset can be built with [this script](https://github.com/golsun/DialogRPT/blob/master/data.sh), which downloads raw data from [a third party dump](https://files.pushshift.io/reddit) and extract comparable pairs of comments for classification tasks.
-```bash
-sh data.sh
-```
-Testing data can be downloaded [here](https://xiagnlp2.blob.core.windows.net/dialogrpt/test.zip) use the command below
-```
-wget https://xiagnlp2.blob.core.windows.net/dialogrpt/test.zip
-unzip test.zip
-```
-Please checkout our [Dataset webpage](https://dialogfeedback.github.io/data.html) for data examples, description, statistics and more.
+As the Pushshift Reddit dataset was deleted from [this server](https://files.pushshift.io/reddit), the data extraction pipeline of this release no longer works. As an alternative, you may want to use the Pushshift [API](https://github.com/pushshift/api).
 
 ## Training
 We use [DialoGPT](https://github.com/microsoft/DialoGPT) to initialize the model. Please download with
