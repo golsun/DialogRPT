@@ -121,11 +121,8 @@ class JointScorer(ScorerBase):
         def avg_score(kk):
             if not kk:
                 return 1
-            sum_score_wt = 0
-            sum_wt = 0
-            for k in kk:
-                sum_score_wt = sum_score_wt + scores[k] * self.wt[k]
-                sum_wt += self.wt[k]
+            sum_score_wt = np.dot(scores[:len(kk)],self.wt[:len(kk)])
+            sum_wt = np.sum(self.wt)
             return sum_score_wt / sum_wt
 
         prior = avg_score(self.kk['prior'])
